@@ -1,0 +1,9 @@
+"0","ortho_data <- read_csv(here(""Data"", ""2025_03_31_ortho_data_SS.csv""))"
+"2","[1mRows: [22m[34m7854[39m [1mColumns: [22m[34m27[39m"
+"2","[36m──[39m [1mColumn specification[22m [36m────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+[1mDelimiter:[22m "",""
+[31mchr[39m (18): IP_INDEX, IP_LABEL, RECORDING_SESSION_LABEL, IA_LABEL, IA_FIRST_RUN_DWELL_TIME, IA_FIRST_FIXATION_DURATION, IA_FIRST_FIXAT...
+[32mdbl[39m  (9): TRIAL_INDEX, IA_DWELL_TIME, IA_DWELL_TIME_%, IA_FIXATION_COUNT, Remaining_Trials_Ortho, Response_Time, Trial_Number_Orthog..."
+"2","
+[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message."
