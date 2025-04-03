@@ -46,9 +46,65 @@ ortho_data <- ortho_data %>%
 
 ```
 
+## Creating variable tat indicated if participant looked at all four interest areas
+
+```{r}
+# Step 1: Summarize whether each IA had fixation > 0
+trial_ia_summary <- ortho_data %>%
+  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX, IA_LABEL) %>%
+  summarise(
+    fixated = any(IA_FIXATION_COUNT > 0, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Step 2: Count how many IAs were fixated per trial
+trial_all_four_ia <- trial_ia_summary %>%
+  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  summarise(
+    unique_IAs_fixated = sum(fixated),
+    looked_all_four_IA = as.integer(unique_IAs_fixated == 4),
+    .groups = "drop"
+  )
+
+# Step 3: Join back to main data
+ortho_data <- ortho_data %>%
+  left_join(trial_all_four_ia %>% select(RECORDING_SESSION_LABEL, TRIAL_INDEX, looked_all_four_IA),
+            by = c("RECORDING_SESSION_LABEL", "TRIAL_INDEX"))
+```
 
 
+## Adding Good Trials variable
 
+```{r}
+# Step 1: Mark "good" trials per subject-trial
+good_trials <- ortho_data %>%
+  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  summarise(
+    trial_correct = any(Accuracy == "Correct", na.rm = TRUE),
+    fixated_all_four = any(looked_all_four_IA == 1, na.rm = TRUE),
+    good_trial = as.integer(trial_correct & fixated_all_four),
+    .groups = "drop"
+  )
+
+
+# Step 2: Count number of good trials per participant
+good_trial_summary <- good_trials %>%
+  group_by(RECORDING_SESSION_LABEL) %>%
+  summarise(
+    good_trial_count = sum(good_trial),
+    .groups = "drop"
+  )
+
+# Step 3: Join back to your original data
+ortho_data <- ortho_data %>%
+  left_join(good_trial_summary, by = "RECORDING_SESSION_LABEL")
+```
+
+## Extracting Data
+
+```{r}
+write_csv(ortho_data, "2025_04_02_Ortho_Data_variables_added.csv")
+```
 
 
 
