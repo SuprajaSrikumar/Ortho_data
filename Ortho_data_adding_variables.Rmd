@@ -85,22 +85,34 @@ ortho_data <- ortho_data %>%
 good_trials <- ortho_data %>%
   group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
   summarise(
+<<<<<<< Updated upstream
     trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
+=======
+    trial_correct = any(Response_Choice %in% c("High_Ortho", "Low_Ortho"), na.rm = TRUE),
+>>>>>>> Stashed changes
     fixated_all_four = any(looked_all_four_IA == 1, na.rm = TRUE),
     good_trial = as.integer(trial_correct & fixated_all_four),
     .groups = "drop"
   )
 
+<<<<<<< Updated upstream
 
 # Step 3: Count number of good trials per participant
+=======
+# Step 2: Compute subject-level good_trial_count and flag
+>>>>>>> Stashed changes
 good_trial_summary <- good_trials %>%
   group_by(RECORDING_SESSION_LABEL) %>%
   summarise(
     good_trial_count = sum(good_trial),
+    has_12_good_trials = as.integer(good_trial_count >= 12),
     .groups = "drop"
   )
 
+<<<<<<< Updated upstream
 # Step 4: Join back to your original data
+=======
+>>>>>>> Stashed changes
 ortho_data <- ortho_data %>%
   left_join(good_trial_summary, by = "RECORDING_SESSION_LABEL")
 ```
