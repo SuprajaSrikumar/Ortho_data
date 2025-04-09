@@ -11,7 +11,7 @@
 
 
 
-<title>Ortho data - Adding variables</title>
+<title>Creating subgroups</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Ortho data - Adding variables</h1>
+<h1 class="title toc-ignore">Creating subgroups</h1>
 
 </div>
 
@@ -1764,138 +1764,152 @@ library(here)</code></pre>
 <h2>Loading data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3J0aG9fZGF0YSA8LSByZWFkX2NzdihoZXJlKFwiRGF0YVwiLCBcIjIwMjVfMDNfMzFfb3J0aG9fZGF0YV9TUy5jc3ZcIikpXG5gYGAifQ== -->
-<pre class="r"><code>ortho_data &lt;- read_csv(here(&quot;Data&quot;, &quot;2025_03_31_ortho_data_SS.csv&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3J0aG9fZGF0YSA8LSByZWFkX2NzdihoZXJlKFwiRGF0YVwiLCBcIjIwMjVfMDRfMDJfT3J0aG9fRGF0YV92YXJpYWJsZXNfYWRkZWQuY3N2XCIpKVxuYGBgIn0= -->
+<pre class="r"><code>ortho_data &lt;- read_csv(here(&quot;Data&quot;, &quot;2025_04_02_Ortho_Data_variables_added.csv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNzg1NCBDb2x1bW5zOiAyN+KUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIsXCJcbmNociAoMTgpOiBJUF9JTkRFWCwgSVBfTEFCRUwsIFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBJQV9MQUJFTCwgSUFfRklSU1RfUlVOX0RXRUxMX1RJTUUsIElBX0ZJUlNUX0ZJWEFUSU9OX0RVUkFUSU9OLCBJQV9GSVJTVF9GSVhBLi4uXG5kYmwgICg5KTogVFJJQUxfSU5ERVgsIElBX0RXRUxMX1RJTUUsIElBX0RXRUxMX1RJTUVfJSwgSUFfRklYQVRJT05fQ09VTlQsIFJlbWFpbmluZ19UcmlhbHNfT3J0aG8sIFJlc3BvbnNlX1RpbWUsIFRyaWFsX051bWJlcl9PcnRoby4uLlxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
-<pre><code>Rows: 7854 Columns: 27── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNzg1NCBDb2x1bW5zOiAzMuKUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIsXCJcbmNociAoMTgpOiBJUF9JTkRFWCwgSVBfTEFCRUwsIFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBJQV9MQUJFTCwgSUFfRklSU1RfUlVOX0RXRUxMX1RJTUUsIElBX0ZJUlNUX0ZJWEFUSU9OX0RVUkFUSU9OLCBJQV9GSVJTVF9GSVhBLi4uXG5kYmwgKDEzKTogVFJJQUxfSU5ERVgsIElBX0RXRUxMX1RJTUUsIElBX0RXRUxMX1RJTUVfJSwgSUFfRklYQVRJT05fQ09VTlQsIFJlbWFpbmluZ19UcmlhbHNfT3J0aG8sIFJlc3BvbnNlX1RpbWUsIFRyaWFsX051bWJlcl9PcnRoby4uLlxubGdsICAoMSk6IGF0X2xlYXN0XzEyX2FjY3VyYXRlXG7ihLkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG7ihLkgU3BlY2lmeSB0aGUgY29sdW1uIHR5cGVzIG9yIHNldCBgc2hvd19jb2xfdHlwZXMgPSBGQUxTRWAgdG8gcXVpZXQgdGhpcyBtZXNzYWdlLlxuIn0= -->
+<pre><code>Rows: 7854 Columns: 32── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
 chr (18): IP_INDEX, IP_LABEL, RECORDING_SESSION_LABEL, IA_LABEL, IA_FIRST_RUN_DWELL_TIME, IA_FIRST_FIXATION_DURATION, IA_FIRST_FIXA...
-dbl  (9): TRIAL_INDEX, IA_DWELL_TIME, IA_DWELL_TIME_%, IA_FIXATION_COUNT, Remaining_Trials_Ortho, Response_Time, Trial_Number_Ortho...
+dbl (13): TRIAL_INDEX, IA_DWELL_TIME, IA_DWELL_TIME_%, IA_FIXATION_COUNT, Remaining_Trials_Ortho, Response_Time, Trial_Number_Ortho...
+lgl  (1): at_least_12_accurate
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="creating-variable-that-indicated-if-participant-looked-at-all-four-interest-areas" class="section level2">
-<h2>Creating variable that indicated if participant looked at all four
-interest areas</h2>
+<div id="creating-group-variable" class="section level2">
+<h2>Creating group variable</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdGVwIDE6IFN1bW1hcml6ZSB3aGV0aGVyIGVhY2ggSUEgaGFkIGZpeGF0aW9uID4gMFxudHJpYWxfaWFfc3VtbWFyeSA8LSBvcnRob19kYXRhICU+JVxuICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgVFJJQUxfSU5ERVgsIElBX0xBQkVMKSAlPiVcbiAgc3VtbWFyaXNlKFxuICAgIGZpeGF0ZWQgPSBhbnkoSUFfRklYQVRJT05fQ09VTlQgPiAwLCBuYS5ybSA9IFRSVUUpLFxuICAgIC5ncm91cHMgPSBcImRyb3BcIlxuICApXG5cbiMgU3RlcCAyOiBDb3VudCBob3cgbWFueSBJQXMgd2VyZSBmaXhhdGVkIHBlciB0cmlhbFxudHJpYWxfYWxsX2ZvdXJfaWEgPC0gdHJpYWxfaWFfc3VtbWFyeSAlPiVcbiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIFRSSUFMX0lOREVYKSAlPiVcbiAgc3VtbWFyaXNlKFxuICAgIHVuaXF1ZV9JQXNfZml4YXRlZCA9IHN1bShmaXhhdGVkKSxcbiAgICBsb29rZWRfYWxsX2ZvdXJfSUEgPSBhcy5pbnRlZ2VyKHVuaXF1ZV9JQXNfZml4YXRlZCA9PSA0KSxcbiAgICAuZ3JvdXBzID0gXCJkcm9wXCJcbiAgKVxuXG4jIFN0ZXAgMzogSm9pbiBiYWNrIHRvIG1haW4gZGF0YVxub3J0aG9fZGF0YSA8LSBvcnRob19kYXRhICU+JVxuICBsZWZ0X2pvaW4odHJpYWxfYWxsX2ZvdXJfaWEgJT4lIHNlbGVjdChSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgVFJJQUxfSU5ERVgsIGxvb2tlZF9hbGxfZm91cl9JQSksXG4gICAgICAgICAgICBieSA9IGMoXCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTFwiLCBcIlRSSUFMX0lOREVYXCIpKVxuYGBgIn0= -->
-<pre class="r"><code># Step 1: Summarize whether each IA had fixation &gt; 0
-trial_ia_summary &lt;- ortho_data %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX, IA_LABEL) %&gt;%
-  summarise(
-    fixated = any(IA_FIXATION_COUNT &gt; 0, na.rm = TRUE),
-    .groups = &quot;drop&quot;
-  )
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFZlY3RvcnMgb2YgcGFydGljaXBhbnQgSURzIGZvciBlYWNoIGdyb3VwXG50ZF9pZHMgPC0gYyhcImMxNDEwOTdcIiwgXCJjMTQzMTEzXCIsIFwiYzE0MzExNFwiLCBcImMxNDMyNzhcIiwgXCJjMTcxMDE0XCIsIFwiYzE3MTA2NFwiLCBcImMxNzEwNzFcIiwgXCJjMTcxMDgwXCIsXG4gICAgICAgICAgICBcImMxNzEwODJcIiwgXCJjMTcxMTEzXCIsIFwiYzE3MTEyOVwiLCBcImMxNzExMzNcIiwgXCJjMTcxMTQxXCIsIFwiYzE3MTE0NFwiLCBcImMxOTEwMThcIiwgXCJjMTkxMDIwXCIsXG4gICAgICAgICAgICBcImMxOTEwMjFcIiwgXCJjMTkxMDI1XCIsIFwiYzE5MTAzMVwiLCBcImMxOTEwMzRcIiwgXCJjMTkxMDM1XCIsIFwiYzE5MTAzNlwiLCBcImMxOTEwNjBcIilcblxuY29tcGVuc2F0ZWRfaWRzIDwtIGMoXCJjMTk0MDA1XCIsIFwiYzE5NDAxMFwiLCBcImMxOTQwMTdcIiwgXCJjMTk0MDE4XCIsIFwiYzE5NDAxOVwiLCBcImMxOTQwMjBcIiwgXCJjMTk0MDIyXCIsIFxuICAgICAgICAgICAgICAgICAgICAgXCJjMTk0MDI1XCIsIFwiYzE5NDAyNlwiLCBcImMxOTQwMjdcIiwgXCJjMTk0MDI4XCIsIFwiYzE5NDAyOVwiLCBcImMxOTQwMzFcIiwgXCJjMTk0MDM1XCIsIFxuICAgICAgICAgICAgICAgICAgICAgXCJjMTk0MDM4XCIsIFwiYzE5NDAzOVwiLCBcImMxOTQwNDVcIiwgXCJjMTk0MDQ3XCIpXG5cbmR5c2xleGlhX2lkcyA8LSBjKFwiYzE5NDAwMVwiLCBcImMxOTQwMDJcIiwgXCJjMTk0MDAzXCIsIFwiYzE5NDAwNFwiLCBcImMxOTQwMDZcIiwgXCJjMTk0MDA3XCIsIFwiYzE5NDAwOFwiLCBcbiAgICAgICAgICAgICAgICAgIFwiYzE5NDAwOVwiLCBcImMxOTQwMTFcIiwgXCJjMTk0MDEzXCIsIFwiYzE5NDAxNFwiLCBcImMxOTQwMTZcIiwgXCJjMTk0MDIxXCIsIFwiYzE5NDAyM1wiLCBcbiAgICAgICAgICAgICAgICAgIFwiYzE5NDAzMFwiLCBcImMxOTQwMzJcIiwgXCJjMTk0MDMzXCIsIFwiYzE5NDAzNFwiLCBcImMxOTQwMzZcIiwgXCJjMTk0MDQwXCIsIFwiYzE5NDA0MVwiLCBcbiAgICAgICAgICAgICAgICAgIFwiYzE5NDA0MlwiLCBcImMxOTQwNDNcIiwgXCJjMTk0MDQ2XCIsIFwiYzE5NDA0OFwiLCBcImMxOTQwNDlcIiwgXCJjMTk0MDUxXCIsIFwiYzE5NDA1NVwiLCBcbiAgICAgICAgICAgICAgICAgIFwiYzE5NDA1N1wiLCBcImMxOTQwNThcIilcblxuIyBBc3NpZ24gZ3JvdXBzXG5vcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lXG4gIG11dGF0ZShHcm91cCA9IGNhc2Vfd2hlbihcbiAgICBSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCAlaW4lIHRkX2lkcyB+IFwiVERcIixcbiAgICBSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCAlaW4lIGNvbXBlbnNhdGVkX2lkcyB+IFwiQ29tcGVuc2F0ZWRcIixcbiAgICBSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCAlaW4lIGR5c2xleGlhX2lkcyB+IFwiRHlzbGV4aWFcIixcbiAgICBUUlVFIH4gTkFfY2hhcmFjdGVyX1xuICApKVxuXG5gYGAifQ== -->
+<pre class="r"><code>
+# Vectors of participant IDs for each group
+td_ids &lt;- c(&quot;c141097&quot;, &quot;c143113&quot;, &quot;c143114&quot;, &quot;c143278&quot;, &quot;c171014&quot;, &quot;c171064&quot;, &quot;c171071&quot;, &quot;c171080&quot;,
+            &quot;c171082&quot;, &quot;c171113&quot;, &quot;c171129&quot;, &quot;c171133&quot;, &quot;c171141&quot;, &quot;c171144&quot;, &quot;c191018&quot;, &quot;c191020&quot;,
+            &quot;c191021&quot;, &quot;c191025&quot;, &quot;c191031&quot;, &quot;c191034&quot;, &quot;c191035&quot;, &quot;c191036&quot;, &quot;c191060&quot;)
 
-# Step 2: Count how many IAs were fixated per trial
-trial_all_four_ia &lt;- trial_ia_summary %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %&gt;%
-  summarise(
-    unique_IAs_fixated = sum(fixated),
-    looked_all_four_IA = as.integer(unique_IAs_fixated == 4),
-    .groups = &quot;drop&quot;
-  )
+compensated_ids &lt;- c(&quot;c194005&quot;, &quot;c194010&quot;, &quot;c194017&quot;, &quot;c194018&quot;, &quot;c194019&quot;, &quot;c194020&quot;, &quot;c194022&quot;, 
+                     &quot;c194025&quot;, &quot;c194026&quot;, &quot;c194027&quot;, &quot;c194028&quot;, &quot;c194029&quot;, &quot;c194031&quot;, &quot;c194035&quot;, 
+                     &quot;c194038&quot;, &quot;c194039&quot;, &quot;c194045&quot;, &quot;c194047&quot;)
 
-# Step 3: Join back to main data
+dyslexia_ids &lt;- c(&quot;c194001&quot;, &quot;c194002&quot;, &quot;c194003&quot;, &quot;c194004&quot;, &quot;c194006&quot;, &quot;c194007&quot;, &quot;c194008&quot;, 
+                  &quot;c194009&quot;, &quot;c194011&quot;, &quot;c194013&quot;, &quot;c194014&quot;, &quot;c194016&quot;, &quot;c194021&quot;, &quot;c194023&quot;, 
+                  &quot;c194030&quot;, &quot;c194032&quot;, &quot;c194033&quot;, &quot;c194034&quot;, &quot;c194036&quot;, &quot;c194040&quot;, &quot;c194041&quot;, 
+                  &quot;c194042&quot;, &quot;c194043&quot;, &quot;c194046&quot;, &quot;c194048&quot;, &quot;c194049&quot;, &quot;c194051&quot;, &quot;c194055&quot;, 
+                  &quot;c194057&quot;, &quot;c194058&quot;)
+
+# Assign groups
 ortho_data &lt;- ortho_data %&gt;%
-  left_join(trial_all_four_ia %&gt;% select(RECORDING_SESSION_LABEL, TRIAL_INDEX, looked_all_four_IA),
-            by = c(&quot;RECORDING_SESSION_LABEL&quot;, &quot;TRIAL_INDEX&quot;))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="creating-variable-for-total-trials-and-at-least-12-accurate-trials" class="section level2">
-<h2>Creating variable for total trials and at least 12 accurate
-trials</h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdGVwIDE6IENyZWF0ZSBhY2N1cmFjeV9oaWdoX2xvdyB2YXJpYWJsZVxub3J0aG9fZGF0YSA8LSBvcnRob19kYXRhICU+JVxuICBtdXRhdGUoXG4gICAgYWNjdXJhY3lfaGlnaF9sb3cgPSBhcy5pbnRlZ2VyKFJlc3BvbnNlX0Nob2ljZSAlaW4lIGMoXCJIaWdoX09ydGhvXCIsIFwiTG93X09ydGhvXCIpKVxuICApXG4jIFN0ZXAgMTogQ29tcHV0ZSBhY2N1cmFjeSBwZXIgdHJpYWwgKGUuZy4sIHRyZWF0IGEgdHJpYWwgYXMgXCJjb3JyZWN0XCIgaWYgYWxsIHJvd3MgYXJlIGNvcnJlY3QpXG5cbnRyaWFsX2FjY3VyYWN5IDwtIG9ydGhvX2RhdGEgJT4lXG4gIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICB0cmlhbF9jb3JyZWN0ID0gYXMuaW50ZWdlcihhbnkoYWNjdXJhY3lfaGlnaF9sb3cgPT0gMSwgbmEucm0gPSBUUlVFKSksXG4gICAgICAuZ3JvdXBzID0gXCJkcm9wXCJcbiAgKVxuXG4jIFN0ZXAgMjogQ291bnQgaG93IG1hbnkgdHJpYWxzIHdlcmUgYWNjdXJhdGUgcGVyIHN1YmplY3Rcblxuc3ViamVjdF9zdW1tYXJ5IDwtIHRyaWFsX2FjY3VyYWN5ICU+JVxuICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICB0b3RhbF90cmlhbHMgPSBuKCksXG4gICAgYWNjdXJhdGVfdHJpYWxzID0gc3VtKHRyaWFsX2NvcnJlY3QpLFxuICAgIGF0X2xlYXN0XzEyX2FjY3VyYXRlID0gYWNjdXJhdGVfdHJpYWxzID49IDEyLFxuICAgIC5ncm91cHMgPSBcImRyb3BcIlxuICApXG5cbiMgU3RlcCAzOiBKb2luIHRoaXMgYmFjayB0byB5b3VyIG9yaWdpbmFsIGV5ZSB0cmFja2luZyBkYXRhXG5vcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lXG4gIGxlZnRfam9pbihzdWJqZWN0X3N1bW1hcnkgJT4lIHNlbGVjdChSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgYWNjdXJhdGVfdHJpYWxzLCBhdF9sZWFzdF8xMl9hY2N1cmF0ZSksIGJ5ID0gXCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTFwiKVxuXG5gYGAifQ== -->
-<pre class="r"><code># Step 1: Create accuracy_high_low variable
-ortho_data &lt;- ortho_data %&gt;%
-  mutate(
-    accuracy_high_low = as.integer(Response_Choice %in% c(&quot;High_Ortho&quot;, &quot;Low_Ortho&quot;))
-  )
-# Step 1: Compute accuracy per trial (e.g., treat a trial as &quot;correct&quot; if all rows are correct)
-
-trial_accuracy &lt;- ortho_data %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %&gt;%
-  summarise(
-    trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
-      .groups = &quot;drop&quot;
-  )
-
-# Step 2: Count how many trials were accurate per subject
-
-subject_summary &lt;- trial_accuracy %&gt;%
-  group_by(RECORDING_SESSION_LABEL) %&gt;%
-  summarise(
-    total_trials = n(),
-    accurate_trials = sum(trial_correct),
-    at_least_12_accurate = accurate_trials &gt;= 12,
-    .groups = &quot;drop&quot;
-  )
-
-# Step 3: Join this back to your original eye tracking data
-ortho_data &lt;- ortho_data %&gt;%
-  left_join(subject_summary %&gt;% select(RECORDING_SESSION_LABEL, accurate_trials, at_least_12_accurate), by = &quot;RECORDING_SESSION_LABEL&quot;)
+  mutate(Group = case_when(
+    RECORDING_SESSION_LABEL %in% td_ids ~ &quot;TD&quot;,
+    RECORDING_SESSION_LABEL %in% compensated_ids ~ &quot;Compensated&quot;,
+    RECORDING_SESSION_LABEL %in% dyslexia_ids ~ &quot;Dyslexia&quot;,
+    TRUE ~ NA_character_
+  ))
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="adding-good-trials-variable" class="section level2">
-<h2>Adding Good Trials variable</h2>
+<div id="viewing-ids-that-are-in-each-group" class="section level2">
+<h2>Viewing IDs that are in each group</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFN0ZXAgMjogTWFyayBcImdvb2RcIiB0cmlhbHMgcGVyIHN1YmplY3QtdHJpYWxcbmdvb2RfdHJpYWxzIDwtIG9ydGhvX2RhdGEgJT4lXG4gIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICB0cmlhbF9jb3JyZWN0ID0gYXMuaW50ZWdlcihhbnkoYWNjdXJhY3lfaGlnaF9sb3cgPT0gMSwgbmEucm0gPSBUUlVFKSksXG4gICAgZml4YXRlZF9hbGxfZm91ciA9IGFueShsb29rZWRfYWxsX2ZvdXJfSUEgPT0gMSwgbmEucm0gPSBUUlVFKSxcbiAgICBnb29kX3RyaWFsID0gYXMuaW50ZWdlcih0cmlhbF9jb3JyZWN0ICYgZml4YXRlZF9hbGxfZm91ciksXG4gICAgLmdyb3VwcyA9IFwiZHJvcFwiXG4gIClcblxuXG4jIFN0ZXAgMzogQ291bnQgbnVtYmVyIG9mIGdvb2QgdHJpYWxzIHBlciBwYXJ0aWNpcGFudFxuZ29vZF90cmlhbF9zdW1tYXJ5IDwtIGdvb2RfdHJpYWxzICU+JVxuICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICBnb29kX3RyaWFsX2NvdW50ID0gc3VtKGdvb2RfdHJpYWwpLFxuICAgIC5ncm91cHMgPSBcImRyb3BcIlxuICApXG5cbiMgU3RlcCA0OiBKb2luIGJhY2sgdG8geW91ciBvcmlnaW5hbCBkYXRhXG5vcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lXG4gIGxlZnRfam9pbihnb29kX3RyaWFsX3N1bW1hcnksIGJ5ID0gXCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTFwiKVxuYGBgIn0= -->
-<pre class="r"><code>
-# Step 2: Mark &quot;good&quot; trials per subject-trial
-good_trials &lt;- ortho_data %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %&gt;%
-  summarise(
-    trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
-    fixated_all_four = any(looked_all_four_IA == 1, na.rm = TRUE),
-    good_trial = as.integer(trial_correct &amp; fixated_all_four),
-    .groups = &quot;drop&quot;
-  )
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgVERcbm9ydGhvX2RhdGEgJT4lXG4gIGZpbHRlcihHcm91cCA9PSBcIlREXCIpICU+JVxuICBzZWxlY3QoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwpICU+JVxuICBkaXN0aW5jdCgpXG5gYGAifQ== -->
+<pre class="r"><code>## TD
+ortho_data %&gt;%
+  filter(Group == &quot;TD&quot;) %&gt;%
+  select(RECORDING_SESSION_LABEL) %&gt;%
+  distinct()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MjIsIm5jb2wiOjEsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiMjIgw5cgMSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMlMyMjZDUUJDR0IvQVFTZHFZTkdtZkFzS0NGYnhzcTIxTWpDYmFKdDRaaXRTYTBzVWcybDcyZWZzUTBvSHVSbVl2RnVhYjJYL25rSmtQbDU2NU5BSEFnSVpoZ05GRUU1b3Z6NDlXQU5EUUVUUm9RS2Y4ZitPbHE4b0IwTVZ6TFFMdGlQV1lNL0JyNkRIbVVlelYwZldETS9yTXFVY1IreFI5UmpCd0tMcDFKSGtSM1FIQkhxTllTelRBTWdLQ3JrT1JVYndsNk5Hb1IxLzJsTXQ5Z24xSEdYV1RoNS94WG94Wk9tL21vNGZaZkRpZVBxMFdvOFZpUEp1dUpuZjNvNG1pN1dUcGx5MzFGM2owSC93VVJmR3JKb21TY0s4bU1kZGhIdHB2R2VxUlRvcWtuZTd5YmNwUnBKZUwwRkxFV3FZNHVnZGVWcksyb3ZjRC83QVlVK0xHam0vS3BHS3BRRlNzVmN0MXRyWC9NdlJDeUZ0QzNvcjVac3RqMlU4U3ZzYUpmSGtkSDRWNWlRT3A1bUh2c2kzUFphUG8zZHQ1bW9kU1lrWnBJajFWNjNENkEvWWJUMzhlQXdBQSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["RECORDING_SESSION_LABEL"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"c141097"},{"1":"c143113"},{"1":"c143114"},{"1":"c143278"},{"1":"c171014"},{"1":"c171064"},{"1":"c171071"},{"1":"c171080"},{"1":"c171082"},{"1":"c171113"},{"1":"c171129"},{"1":"c171141"},{"1":"c171144"},{"1":"c191018"},{"1":"c191020"},{"1":"c191021"},{"1":"c191025"},{"1":"c191031"},{"1":"c191034"},{"1":"c191035"},{"1":"c191036"},{"1":"c191060"}],"options":{"columns":{"min":{},"max":[10],"total":[1]},"rows":{"min":[10],"max":[10],"total":[22]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgQ29tcGVuc2F0ZWRcbm9ydGhvX2RhdGEgJT4lXG4gIGZpbHRlcihHcm91cCA9PSBcIkNvbXBlbnNhdGVkXCIpICU+JVxuICBzZWxlY3QoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwpICU+JVxuICBkaXN0aW5jdCgpXG5gYGAifQ== -->
+<pre class="r"><code>## Compensated
+ortho_data %&gt;%
+  filter(Group == &quot;Compensated&quot;) %&gt;%
+  select(RECORDING_SESSION_LABEL) %&gt;%
+  distinct()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MTUsIm5jb2wiOjEsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiMTUgw5cgMSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVJ5MDZEUUJTOVBKdVNxRTFjK0JVUVh0cDJxUlpOazZaTlFKUHVHZ1NzUkJ3STBPclNYL1lIaWdQT3hOeFp6TXc5NTg2NXozQ3g5WXl0QVFBS3FJb0Npa1pOMEo2Zkhzd1pnQ3BUSUlFSzQvNzlvcDh1QndKZ1FzOEZjNHdTWis3YjlqV0NqbzNoRk1NWmhuTUVYYXgxWFF4dk1NU1JYUnpLY3pERVJYcjRzNCs5L2xTWWdFYmlqNnhoM1hQeUtnenVOK0ZpdVg3Y1JVRVVMVGZyM2VyMkxsZ0oybkZkZmxwY2YwYVAvRTJ2cnV0K3hDUkpFVGRpRWlPTjI5aDZyYW1lb3BNZ0daVlZtNWVFaXVSK1A3b2dsbXFCbUJ4SVgwbHFKbThIOG00NnJ1QlhLckx2azdKZEE2dFlHbmIrYjB0L1pjZ2RrK3RNcm1ka241T005MVBFTDFuQkk2ZlprWm5uZENERFBLeXF6a25MRzZWc1k3VmxHM09Ka1pRRlo0Ylc0ZlFMZmpBYWZMVUNBQUE9In0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["RECORDING_SESSION_LABEL"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"c194005"},{"1":"c194010"},{"1":"c194017"},{"1":"c194018"},{"1":"c194019"},{"1":"c194020"},{"1":"c194022"},{"1":"c194026"},{"1":"c194027"},{"1":"c194029"},{"1":"c194031"},{"1":"c194035"},{"1":"c194039"},{"1":"c194045"},{"1":"c194047"}],"options":{"columns":{"min":{},"max":[10],"total":[1]},"rows":{"min":[10],"max":[10],"total":[15]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgRHlzbGV4aWFcbm9ydGhvX2RhdGEgJT4lXG4gIGZpbHRlcihHcm91cCA9PSBcIkR5c2xleGlhXCIpICU+JVxuICBzZWxlY3QoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwpICU+JVxuICBkaXN0aW5jdCgpXG5gYGAifQ== -->
+<pre class="r"><code>## Dyslexia
+ortho_data %&gt;%
+  filter(Group == &quot;Dyslexia&quot;) %&gt;%
+  select(RECORDING_SESSION_LABEL) %&gt;%
+  distinct()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MjEsIm5jb2wiOjEsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiMjEgw5cgMSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVMyMDZEUUJBZGJtMUtvbWxpakY4QmdVSzFmVlNMcGtuVEpxQkozNW9Wc0JKeElVQ3JqLzZ2LzFCY2NEZG05bUdYT1ROenpselljTEgxekswSkFCcm9tZ2Fhd1V3d25wOGVyQm1BcmpLZ2dBNmo3dnZGa2k1NkI4Q1luVXNlR01idTNIY2NEME1mdzJzTWJ6Q2NZVGhIMEhVeHhNb3VWcDdnNUFudXluTXdsS0pZMmNQS1BsYjJNZGVYa3ZFSTB5bUc4bTROU2o3U211OVZPSy9DNEg0VExwYnJ4MTBVUk5GeXM5NnRidStDbGNRZFZjV25MZmhuN0tqZjdHcmI5a2N1RXVla2xvdVlDV21JL1ZveFBrTW5pVElzeWlZcktDT3AzWjhmU0dTbGtoempBKzA2U2F6NDdVRGZMZGVUNGxwSjkxMVIvb3FBZDZ6MHIrbmZWdjdhVUZ0T0gzRDZJS1g3aktaaW5weThwTGxRVHRJak44L1pRdnA5MkdXVjBVWU15cnkxM1JRTkVSUXpMbkxoNlVlSDB5K0RUOVEzRHdNQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["RECORDING_SESSION_LABEL"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"c194003"},{"1":"c194004"},{"1":"c194006"},{"1":"c194007"},{"1":"c194008"},{"1":"c194009"},{"1":"c194011"},{"1":"c194014"},{"1":"c194016"},{"1":"c194021"},{"1":"c194023"},{"1":"c194030"},{"1":"c194033"},{"1":"c194034"},{"1":"c194036"},{"1":"c194041"},{"1":"c194043"},{"1":"c194046"},{"1":"c194049"},{"1":"c194055"},{"1":"c194058"}],"options":{"columns":{"min":{},"max":[10],"total":[1]},"rows":{"min":[10],"max":[10],"total":[21]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyMgVmlld2luZyBJRHMgdGhhdCBhcmUgTkFzXG5cbm9ydGhvX2RhdGEgJT4lXG4gIGZpbHRlcihpcy5uYShHcm91cCkpICU+JVxuICBzZWxlY3QoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwpICU+JVxuICBkaXN0aW5jdCgpXG5gYGAifQ== -->
+<pre class="r"><code>## Viewing IDs that are NAs
 
-
-# Step 3: Count number of good trials per participant
-good_trial_summary &lt;- good_trials %&gt;%
-  group_by(RECORDING_SESSION_LABEL) %&gt;%
-  summarise(
-    good_trial_count = sum(good_trial),
-    .groups = &quot;drop&quot;
-  )
-
-# Step 4: Join back to your original data
-ortho_data &lt;- ortho_data %&gt;%
-  left_join(good_trial_summary, by = &quot;RECORDING_SESSION_LABEL&quot;)</code></pre>
+ortho_data %&gt;%
+  filter(is.na(Group)) %&gt;%
+  select(RECORDING_SESSION_LABEL) %&gt;%
+  distinct()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6NDQsIm5jb2wiOjEsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiNDQgw5cgMSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJtV1QyMDZEUUJDR0YrZ2hKZEUwOGNLWHNHUlBISHFwdHBvbVRadTBtdlN1UVlxMXNTNE5VUFhTaC9SNWlndUNNT3ZGd240ei9Edi9MTHVMMFlxWkt4TWhaS0NXWVNDakxhZW8vZmh3Ti9BUWF1a1NOTlJDdmZ6OUtUKzZLQUlJOWVXNEtoUGRnSENHYmRKRTRyZzEyb3hnZ0JRUGEzUUpwaTVBRzZKck41RlFDcERCTEhkcTlDakdEVmNlKzRlTnBZWUVZdy9pRUNEQkVBbEVGeUxVVWxpSU1vZ2NvZ01ScnN5Z2xzRkN2R2tTdHA4amhjZ2djb2cyeEtZTkRqMXp6R0RXcmwxUnVYR051cFNBdjFDZ2ttVVEvd29sUllNT1FKdEM1TXFoYlF2L0xVektBMXNGTHhmajIvbGlOSm5kcjVmajVYSXluNjJuMXpmanFhTHR4ZEdIVmVuUDVOQy81Q1BMc20rMVNMRDNFN1dJdWZGVDMzcU9wVjdTU1pGMG8wTzZpNFFVNmZtVjZpaGlMVllDL2FQSW5Xd0d3Y3RSdkE0SVYvTEdRV3p6b3VYMVJLVmpyYmltOVZ6N3RhRm5wYnhUeWp1aDJPNUVXUFd6OTUvQ2ZiWHlKbnd2cCtkeVE0cjlzQTd4VHFSVm96S2FXR21VK3BYRURLSjlGU2xhUjZjZlNHanFsV2dFQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["RECORDING_SESSION_LABEL"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"c143051"},{"1":"c143167"},{"1":"c153107"},{"1":"c153209"},{"1":"c171027"},{"1":"c171057"},{"1":"c171075"},{"1":"c171122"},{"1":"c171135"},{"1":"c171146"},{"1":"c182001"},{"1":"c183001"},{"1":"c183002"},{"1":"c191008"},{"1":"c191009"},{"1":"c191010"},{"1":"c191011"},{"1":"c191017"},{"1":"c191019"},{"1":"c191022"},{"1":"c191023"},{"1":"c191024"},{"1":"c191026"},{"1":"c191027"},{"1":"c191033"},{"1":"c191039"},{"1":"c191040"},{"1":"c192001"},{"1":"c192002"},{"1":"c192003"},{"1":"c192004"},{"1":"c192005"},{"1":"c192007"},{"1":"c194024"},{"1":"c194037"},{"1":"c194059"},{"1":"c201002"},{"1":"c213001"},{"1":"c213002"},{"1":"c213003"},{"1":"c213004"},{"1":"s191046"},{"1":"s191052"},{"1":"s191054"}],"options":{"columns":{"min":{},"max":[10],"total":[1]},"rows":{"min":[10],"max":[10],"total":[44]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3J0aG9fZGF0YV9jbGVhbiA8LSBvcnRob19kYXRhICU+JVxuICBmaWx0ZXIoIWlzLm5hKEdyb3VwKSlcbmBgYCJ9 -->
+<pre class="r"><code>ortho_data_clean &lt;- ortho_data %&gt;%
+  filter(!is.na(Group))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="section" class="section level2">
-<h2></h2>
 </div>
 <div id="extracting-data" class="section level2">
 <h2>Extracting Data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfY3N2KG9ydGhvX2RhdGEsIFwiMjAyNV8wNF8wMl9PcnRob19EYXRhX3ZhcmlhYmxlc19hZGRlZC5jc3ZcIilcbmBgYCJ9 -->
-<pre class="r"><code>write_csv(ortho_data, &quot;2025_04_02_Ortho_Data_variables_added.csv&quot;)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfY3N2KG9ydGhvX2RhdGFfY2xlYW4sIFwiMjAyNV8wNF8wOV9PcnRob19EYXRhX3dpdGhfZ3JvdXBzLmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code>write_csv(ortho_data_clean, &quot;2025_04_09_Ortho_Data_with_groups.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIk9ydGhvIGRhdGEgLSBBZGRpbmcgdmFyaWFibGVzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShoZXJlKQ0KYGBgDQoNCg0KIyMgTG9hZGluZyBkYXRhDQoNCmBgYHtyfQ0Kb3J0aG9fZGF0YSA8LSByZWFkX2NzdihoZXJlKCJEYXRhIiwgIjIwMjVfMDNfMzFfb3J0aG9fZGF0YV9TUy5jc3YiKSkNCmBgYA0KDQojIyBDcmVhdGluZyB2YXJpYWJsZSB0aGF0IGluZGljYXRlZCBpZiBwYXJ0aWNpcGFudCBsb29rZWQgYXQgYWxsIGZvdXIgaW50ZXJlc3QgYXJlYXMNCg0KYGBge3J9DQojIFN0ZXAgMTogU3VtbWFyaXplIHdoZXRoZXIgZWFjaCBJQSBoYWQgZml4YXRpb24gPiAwDQp0cmlhbF9pYV9zdW1tYXJ5IDwtIG9ydGhvX2RhdGEgJT4lDQogIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCwgSUFfTEFCRUwpICU+JQ0KICBzdW1tYXJpc2UoDQogICAgZml4YXRlZCA9IGFueShJQV9GSVhBVElPTl9DT1VOVCA+IDAsIG5hLnJtID0gVFJVRSksDQogICAgLmdyb3VwcyA9ICJkcm9wIg0KICApDQoNCiMgU3RlcCAyOiBDb3VudCBob3cgbWFueSBJQXMgd2VyZSBmaXhhdGVkIHBlciB0cmlhbA0KdHJpYWxfYWxsX2ZvdXJfaWEgPC0gdHJpYWxfaWFfc3VtbWFyeSAlPiUNCiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIFRSSUFMX0lOREVYKSAlPiUNCiAgc3VtbWFyaXNlKA0KICAgIHVuaXF1ZV9JQXNfZml4YXRlZCA9IHN1bShmaXhhdGVkKSwNCiAgICBsb29rZWRfYWxsX2ZvdXJfSUEgPSBhcy5pbnRlZ2VyKHVuaXF1ZV9JQXNfZml4YXRlZCA9PSA0KSwNCiAgICAuZ3JvdXBzID0gImRyb3AiDQogICkNCg0KIyBTdGVwIDM6IEpvaW4gYmFjayB0byBtYWluIGRhdGENCm9ydGhvX2RhdGEgPC0gb3J0aG9fZGF0YSAlPiUNCiAgbGVmdF9qb2luKHRyaWFsX2FsbF9mb3VyX2lhICU+JSBzZWxlY3QoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIFRSSUFMX0lOREVYLCBsb29rZWRfYWxsX2ZvdXJfSUEpLA0KICAgICAgICAgICAgYnkgPSBjKCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCIsICJUUklBTF9JTkRFWCIpKQ0KYGBgDQoNCg0KIyMgQ3JlYXRpbmcgdmFyaWFibGUgZm9yIHRvdGFsIHRyaWFscyBhbmQgYXQgbGVhc3QgMTIgYWNjdXJhdGUgdHJpYWxzDQoNCmBgYHtyfQ0KIyBTdGVwIDE6IENyZWF0ZSBhY2N1cmFjeV9oaWdoX2xvdyB2YXJpYWJsZQ0Kb3J0aG9fZGF0YSA8LSBvcnRob19kYXRhICU+JQ0KICBtdXRhdGUoDQogICAgYWNjdXJhY3lfaGlnaF9sb3cgPSBhcy5pbnRlZ2VyKFJlc3BvbnNlX0Nob2ljZSAlaW4lIGMoIkhpZ2hfT3J0aG8iLCAiTG93X09ydGhvIikpDQogICkNCiMgU3RlcCAxOiBDb21wdXRlIGFjY3VyYWN5IHBlciB0cmlhbCAoZS5nLiwgdHJlYXQgYSB0cmlhbCBhcyAiY29ycmVjdCIgaWYgYWxsIHJvd3MgYXJlIGNvcnJlY3QpDQoNCnRyaWFsX2FjY3VyYWN5IDwtIG9ydGhvX2RhdGEgJT4lDQogIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCkgJT4lDQogIHN1bW1hcmlzZSgNCiAgICB0cmlhbF9jb3JyZWN0ID0gYXMuaW50ZWdlcihhbnkoYWNjdXJhY3lfaGlnaF9sb3cgPT0gMSwgbmEucm0gPSBUUlVFKSksDQogICAgICAuZ3JvdXBzID0gImRyb3AiDQogICkNCg0KIyBTdGVwIDI6IENvdW50IGhvdyBtYW55IHRyaWFscyB3ZXJlIGFjY3VyYXRlIHBlciBzdWJqZWN0DQoNCnN1YmplY3Rfc3VtbWFyeSA8LSB0cmlhbF9hY2N1cmFjeSAlPiUNCiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwpICU+JQ0KICBzdW1tYXJpc2UoDQogICAgdG90YWxfdHJpYWxzID0gbigpLA0KICAgIGFjY3VyYXRlX3RyaWFscyA9IHN1bSh0cmlhbF9jb3JyZWN0KSwNCiAgICBhdF9sZWFzdF8xMl9hY2N1cmF0ZSA9IGFjY3VyYXRlX3RyaWFscyA+PSAxMiwNCiAgICAuZ3JvdXBzID0gImRyb3AiDQogICkNCg0KIyBTdGVwIDM6IEpvaW4gdGhpcyBiYWNrIHRvIHlvdXIgb3JpZ2luYWwgZXllIHRyYWNraW5nIGRhdGENCm9ydGhvX2RhdGEgPC0gb3J0aG9fZGF0YSAlPiUNCiAgbGVmdF9qb2luKHN1YmplY3Rfc3VtbWFyeSAlPiUgc2VsZWN0KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBhY2N1cmF0ZV90cmlhbHMsIGF0X2xlYXN0XzEyX2FjY3VyYXRlKSwgYnkgPSAiUkVDT1JESU5HX1NFU1NJT05fTEFCRUwiKQ0KDQpgYGANCg0KIyMgQWRkaW5nIEdvb2QgVHJpYWxzIHZhcmlhYmxlDQoNCmBgYHtyfQ0KDQojIFN0ZXAgMjogTWFyayAiZ29vZCIgdHJpYWxzIHBlciBzdWJqZWN0LXRyaWFsDQpnb29kX3RyaWFscyA8LSBvcnRob19kYXRhICU+JQ0KICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgVFJJQUxfSU5ERVgpICU+JQ0KICBzdW1tYXJpc2UoDQogICAgdHJpYWxfY29ycmVjdCA9IGFzLmludGVnZXIoYW55KGFjY3VyYWN5X2hpZ2hfbG93ID09IDEsIG5hLnJtID0gVFJVRSkpLA0KICAgIGZpeGF0ZWRfYWxsX2ZvdXIgPSBhbnkobG9va2VkX2FsbF9mb3VyX0lBID09IDEsIG5hLnJtID0gVFJVRSksDQogICAgZ29vZF90cmlhbCA9IGFzLmludGVnZXIodHJpYWxfY29ycmVjdCAmIGZpeGF0ZWRfYWxsX2ZvdXIpLA0KICAgIC5ncm91cHMgPSAiZHJvcCINCiAgKQ0KDQoNCiMgU3RlcCAzOiBDb3VudCBudW1iZXIgb2YgZ29vZCB0cmlhbHMgcGVyIHBhcnRpY2lwYW50DQpnb29kX3RyaWFsX3N1bW1hcnkgPC0gZ29vZF90cmlhbHMgJT4lDQogIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMKSAlPiUNCiAgc3VtbWFyaXNlKA0KICAgIGdvb2RfdHJpYWxfY291bnQgPSBzdW0oZ29vZF90cmlhbCksDQogICAgLmdyb3VwcyA9ICJkcm9wIg0KICApDQoNCiMgU3RlcCA0OiBKb2luIGJhY2sgdG8geW91ciBvcmlnaW5hbCBkYXRhDQpvcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lDQogIGxlZnRfam9pbihnb29kX3RyaWFsX3N1bW1hcnksIGJ5ID0gIlJFQ09SRElOR19TRVNTSU9OX0xBQkVMIikNCmBgYA0KDQojIyANCg0KIyMgRXh0cmFjdGluZyBEYXRhDQoNCmBgYHtyfQ0Kd3JpdGVfY3N2KG9ydGhvX2RhdGEsICIyMDI1XzA0XzAyX09ydGhvX0RhdGFfdmFyaWFibGVzX2FkZGVkLmNzdiIpDQpgYGANCg0KDQoNCg0KDQoNCg0KDQoNCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNyZWF0aW5nIHN1Ymdyb3VwcyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCmBgYHtyfQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGhlcmUpDQpgYGANCg0KDQojIyBMb2FkaW5nIGRhdGENCg0KYGBge3J9DQpvcnRob19kYXRhIDwtIHJlYWRfY3N2KGhlcmUoIkRhdGEiLCAiMjAyNV8wNF8wMl9PcnRob19EYXRhX3ZhcmlhYmxlc19hZGRlZC5jc3YiKSkNCmBgYA0KDQojIyBDcmVhdGluZyBncm91cCB2YXJpYWJsZQ0KDQpgYGB7cn0NCg0KIyBWZWN0b3JzIG9mIHBhcnRpY2lwYW50IElEcyBmb3IgZWFjaCBncm91cA0KdGRfaWRzIDwtIGMoImMxNDEwOTciLCAiYzE0MzExMyIsICJjMTQzMTE0IiwgImMxNDMyNzgiLCAiYzE3MTAxNCIsICJjMTcxMDY0IiwgImMxNzEwNzEiLCAiYzE3MTA4MCIsDQogICAgICAgICAgICAiYzE3MTA4MiIsICJjMTcxMTEzIiwgImMxNzExMjkiLCAiYzE3MTEzMyIsICJjMTcxMTQxIiwgImMxNzExNDQiLCAiYzE5MTAxOCIsICJjMTkxMDIwIiwNCiAgICAgICAgICAgICJjMTkxMDIxIiwgImMxOTEwMjUiLCAiYzE5MTAzMSIsICJjMTkxMDM0IiwgImMxOTEwMzUiLCAiYzE5MTAzNiIsICJjMTkxMDYwIikNCg0KY29tcGVuc2F0ZWRfaWRzIDwtIGMoImMxOTQwMDUiLCAiYzE5NDAxMCIsICJjMTk0MDE3IiwgImMxOTQwMTgiLCAiYzE5NDAxOSIsICJjMTk0MDIwIiwgImMxOTQwMjIiLCANCiAgICAgICAgICAgICAgICAgICAgICJjMTk0MDI1IiwgImMxOTQwMjYiLCAiYzE5NDAyNyIsICJjMTk0MDI4IiwgImMxOTQwMjkiLCAiYzE5NDAzMSIsICJjMTk0MDM1IiwgDQogICAgICAgICAgICAgICAgICAgICAiYzE5NDAzOCIsICJjMTk0MDM5IiwgImMxOTQwNDUiLCAiYzE5NDA0NyIpDQoNCmR5c2xleGlhX2lkcyA8LSBjKCJjMTk0MDAxIiwgImMxOTQwMDIiLCAiYzE5NDAwMyIsICJjMTk0MDA0IiwgImMxOTQwMDYiLCAiYzE5NDAwNyIsICJjMTk0MDA4IiwgDQogICAgICAgICAgICAgICAgICAiYzE5NDAwOSIsICJjMTk0MDExIiwgImMxOTQwMTMiLCAiYzE5NDAxNCIsICJjMTk0MDE2IiwgImMxOTQwMjEiLCAiYzE5NDAyMyIsIA0KICAgICAgICAgICAgICAgICAgImMxOTQwMzAiLCAiYzE5NDAzMiIsICJjMTk0MDMzIiwgImMxOTQwMzQiLCAiYzE5NDAzNiIsICJjMTk0MDQwIiwgImMxOTQwNDEiLCANCiAgICAgICAgICAgICAgICAgICJjMTk0MDQyIiwgImMxOTQwNDMiLCAiYzE5NDA0NiIsICJjMTk0MDQ4IiwgImMxOTQwNDkiLCAiYzE5NDA1MSIsICJjMTk0MDU1IiwgDQogICAgICAgICAgICAgICAgICAiYzE5NDA1NyIsICJjMTk0MDU4IikNCg0KIyBBc3NpZ24gZ3JvdXBzDQpvcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lDQogIG11dGF0ZShHcm91cCA9IGNhc2Vfd2hlbigNCiAgICBSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCAlaW4lIHRkX2lkcyB+ICJURCIsDQogICAgUkVDT1JESU5HX1NFU1NJT05fTEFCRUwgJWluJSBjb21wZW5zYXRlZF9pZHMgfiAiQ29tcGVuc2F0ZWQiLA0KICAgIFJFQ09SRElOR19TRVNTSU9OX0xBQkVMICVpbiUgZHlzbGV4aWFfaWRzIH4gIkR5c2xleGlhIiwNCiAgICBUUlVFIH4gTkFfY2hhcmFjdGVyXw0KICApKQ0KDQpgYGANCg0KDQojIyBWaWV3aW5nIElEcyB0aGF0IGFyZSBpbiBlYWNoIGdyb3VwDQoNCmBgYHtyfQ0KIyMgVEQNCm9ydGhvX2RhdGEgJT4lDQogIGZpbHRlcihHcm91cCA9PSAiVEQiKSAlPiUNCiAgc2VsZWN0KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMKSAlPiUNCiAgZGlzdGluY3QoKQ0KYGBgDQoNCmBgYHtyfQ0KIyMgQ29tcGVuc2F0ZWQNCm9ydGhvX2RhdGEgJT4lDQogIGZpbHRlcihHcm91cCA9PSAiQ29tcGVuc2F0ZWQiKSAlPiUNCiAgc2VsZWN0KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMKSAlPiUNCiAgZGlzdGluY3QoKQ0KYGBgDQoNCg0KYGBge3J9DQojIyBEeXNsZXhpYQ0Kb3J0aG9fZGF0YSAlPiUNCiAgZmlsdGVyKEdyb3VwID09ICJEeXNsZXhpYSIpICU+JQ0KICBzZWxlY3QoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwpICU+JQ0KICBkaXN0aW5jdCgpDQpgYGANCg0KDQoNCg0KDQpgYGB7cn0NCiMjIFZpZXdpbmcgSURzIHRoYXQgYXJlIE5Bcw0KDQpvcnRob19kYXRhICU+JQ0KICBmaWx0ZXIoaXMubmEoR3JvdXApKSAlPiUNCiAgc2VsZWN0KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMKSAlPiUNCiAgZGlzdGluY3QoKQ0KYGBgDQoNCg0KDQpgYGB7cn0NCm9ydGhvX2RhdGFfY2xlYW4gPC0gb3J0aG9fZGF0YSAlPiUNCiAgZmlsdGVyKCFpcy5uYShHcm91cCkpDQpgYGANCg0KIyMgRXh0cmFjdGluZyBEYXRhDQoNCmBgYHtyfQ0Kd3JpdGVfY3N2KG9ydGhvX2RhdGFfY2xlYW4sICIyMDI1XzA0XzA5X09ydGhvX0RhdGFfd2l0aF9ncm91cHMuY3N2IikNCmBgYA0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg==</div>
 
 
 
@@ -1942,7 +1956,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Ortho_data_adding_variables.Rmd");
+  window.initializeSourceEmbed("Creating groups.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

@@ -16,37 +16,7 @@ library(here)
 ortho_data <- read_csv(here("Data", "2025_03_31_ortho_data_SS.csv"))
 ```
 
-## Creating variable for total trials and at least 12 accurate trials
-
-```{r}
-
-# Step 1: Compute accuracy per trial (e.g., treat a trial as "correct" if all rows are correct)
-
-trial_accuracy <- ortho_data %>%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
-  summarise(
-    trial_correct = any(Accuracy == "Correct"),
-      .groups = "drop"
-  )
-
-# Step 2: Count how many trials were accurate per subject
-
-subject_summary <- trial_accuracy %>%
-  group_by(RECORDING_SESSION_LABEL) %>%
-  summarise(
-    total_trials = n(),
-    accurate_trials = sum(trial_correct),
-    at_least_12_accurate = accurate_trials >= 12,
-    .groups = "drop"
-  )
-
-# Step 3: Join this back to your original eye tracking data
-ortho_data <- ortho_data %>%
-  left_join(subject_summary %>% select(RECORDING_SESSION_LABEL, accurate_trials, at_least_12_accurate), by = "RECORDING_SESSION_LABEL")
-
-```
-
-## Creating variable tat indicated if participant looked at all four interest areas
+## Creating variable that indicated if participant looked at all four interest areas
 
 ```{r}
 # Step 1: Summarize whether each IA had fixation > 0
@@ -73,21 +43,56 @@ ortho_data <- ortho_data %>%
 ```
 
 
+## Creating variable for total trials and at least 12 accurate trials
+
+```{r}
+# Step 1: Create accuracy_high_low variable
+ortho_data <- ortho_data %>%
+  mutate(
+    accuracy_high_low = as.integer(Response_Choice %in% c("High_Ortho", "Low_Ortho"))
+  )
+# Step 1: Compute accuracy per trial (e.g., treat a trial as "correct" if all rows are correct)
+
+trial_accuracy <- ortho_data %>%
+  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  summarise(
+    trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
+      .groups = "drop"
+  )
+
+# Step 2: Count how many trials were accurate per subject
+
+subject_summary <- trial_accuracy %>%
+  group_by(RECORDING_SESSION_LABEL) %>%
+  summarise(
+    total_trials = n(),
+    accurate_trials = sum(trial_correct),
+    at_least_12_accurate = accurate_trials >= 12,
+    .groups = "drop"
+  )
+
+# Step 3: Join this back to your original eye tracking data
+ortho_data <- ortho_data %>%
+  left_join(subject_summary %>% select(RECORDING_SESSION_LABEL, accurate_trials, at_least_12_accurate), by = "RECORDING_SESSION_LABEL")
+
+```
+
 ## Adding Good Trials variable
 
 ```{r}
-# Step 1: Mark "good" trials per subject-trial
+
+# Step 2: Mark "good" trials per subject-trial
 good_trials <- ortho_data %>%
   group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
   summarise(
-    trial_correct = any(Accuracy == "Correct", na.rm = TRUE),
+    trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
     fixated_all_four = any(looked_all_four_IA == 1, na.rm = TRUE),
     good_trial = as.integer(trial_correct & fixated_all_four),
     .groups = "drop"
   )
 
 
-# Step 2: Count number of good trials per participant
+# Step 3: Count number of good trials per participant
 good_trial_summary <- good_trials %>%
   group_by(RECORDING_SESSION_LABEL) %>%
   summarise(
@@ -95,10 +100,12 @@ good_trial_summary <- good_trials %>%
     .groups = "drop"
   )
 
-# Step 3: Join back to your original data
+# Step 4: Join back to your original data
 ortho_data <- ortho_data %>%
   left_join(good_trial_summary, by = "RECORDING_SESSION_LABEL")
 ```
+
+## 
 
 ## Extracting Data
 

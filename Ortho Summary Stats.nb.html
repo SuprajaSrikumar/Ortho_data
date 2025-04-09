@@ -11,7 +11,7 @@
 
 
 
-<title>Ortho data - Adding variables</title>
+<title>Summary Stats</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,7 +1746,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Ortho data - Adding variables</h1>
+<h1 class="title toc-ignore">Summary Stats</h1>
 
 </div>
 
@@ -1764,138 +1764,57 @@ library(here)</code></pre>
 <h2>Loading data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3J0aG9fZGF0YSA8LSByZWFkX2NzdihoZXJlKFwiRGF0YVwiLCBcIjIwMjVfMDNfMzFfb3J0aG9fZGF0YV9TUy5jc3ZcIikpXG5gYGAifQ== -->
-<pre class="r"><code>ortho_data &lt;- read_csv(here(&quot;Data&quot;, &quot;2025_03_31_ortho_data_SS.csv&quot;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxub3J0aG9fZGF0YSA8LSByZWFkX2NzdihoZXJlKFwiRGF0YVwiLCBcIjIwMjVfMDRfMDlfT3J0aG9fRGF0YV93aXRoX2dyb3Vwcy5jc3ZcIikpXG5gYGAifQ== -->
+<pre class="r"><code>ortho_data &lt;- read_csv(here(&quot;Data&quot;, &quot;2025_04_09_Ortho_Data_with_groups.csv&quot;))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNzg1NCBDb2x1bW5zOiAyN+KUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIsXCJcbmNociAoMTgpOiBJUF9JTkRFWCwgSVBfTEFCRUwsIFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBJQV9MQUJFTCwgSUFfRklSU1RfUlVOX0RXRUxMX1RJTUUsIElBX0ZJUlNUX0ZJWEFUSU9OX0RVUkFUSU9OLCBJQV9GSVJTVF9GSVhBLi4uXG5kYmwgICg5KTogVFJJQUxfSU5ERVgsIElBX0RXRUxMX1RJTUUsIElBX0RXRUxMX1RJTUVfJSwgSUFfRklYQVRJT05fQ09VTlQsIFJlbWFpbmluZ19UcmlhbHNfT3J0aG8sIFJlc3BvbnNlX1RpbWUsIFRyaWFsX051bWJlcl9PcnRoby4uLlxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
-<pre><code>Rows: 7854 Columns: 27── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNDQ2NiBDb2x1bW5zOiAzM+KUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIsXCJcbmNociAoMTkpOiBJUF9JTkRFWCwgSVBfTEFCRUwsIFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBJQV9MQUJFTCwgSUFfRklSU1RfUlVOX0RXRUxMX1RJTUUsIElBX0ZJUlNUX0ZJWEFUSU9OX0RVUkFUSU9OLCBJQV9GSVJTVF9GSVhBVC4uLlxuZGJsICgxMyk6IFRSSUFMX0lOREVYLCBJQV9EV0VMTF9USU1FLCBJQV9EV0VMTF9USU1FXyUsIElBX0ZJWEFUSU9OX0NPVU5ULCBSZW1haW5pbmdfVHJpYWxzX09ydGhvLCBSZXNwb25zZV9UaW1lLCBUcmlhbF9OdW1iZXJfT3J0aG9nLi4uXG5sZ2wgICgxKTogYXRfbGVhc3RfMTJfYWNjdXJhdGVcbuKEuSBVc2UgYHNwZWMoKWAgdG8gcmV0cmlldmUgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb24gZm9yIHRoaXMgZGF0YS5cbuKEuSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 4466 Columns: 33── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 Delimiter: &quot;,&quot;
-chr (18): IP_INDEX, IP_LABEL, RECORDING_SESSION_LABEL, IA_LABEL, IA_FIRST_RUN_DWELL_TIME, IA_FIRST_FIXATION_DURATION, IA_FIRST_FIXA...
-dbl  (9): TRIAL_INDEX, IA_DWELL_TIME, IA_DWELL_TIME_%, IA_FIXATION_COUNT, Remaining_Trials_Ortho, Response_Time, Trial_Number_Ortho...
+chr (19): IP_INDEX, IP_LABEL, RECORDING_SESSION_LABEL, IA_LABEL, IA_FIRST_RUN_DWELL_TIME, IA_FIRST_FIXATION_DURATION, IA_FIRST_FIXAT...
+dbl (13): TRIAL_INDEX, IA_DWELL_TIME, IA_DWELL_TIME_%, IA_FIXATION_COUNT, Remaining_Trials_Ortho, Response_Time, Trial_Number_Orthog...
+lgl  (1): at_least_12_accurate
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="creating-variable-that-indicated-if-participant-looked-at-all-four-interest-areas" class="section level2">
-<h2>Creating variable that indicated if participant looked at all four
-interest areas</h2>
+<div id="code-to-create-binary-good-trial-variable" class="section level2">
+<h2>Code to Create binary good trial variable</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdGVwIDE6IFN1bW1hcml6ZSB3aGV0aGVyIGVhY2ggSUEgaGFkIGZpeGF0aW9uID4gMFxudHJpYWxfaWFfc3VtbWFyeSA8LSBvcnRob19kYXRhICU+JVxuICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgVFJJQUxfSU5ERVgsIElBX0xBQkVMKSAlPiVcbiAgc3VtbWFyaXNlKFxuICAgIGZpeGF0ZWQgPSBhbnkoSUFfRklYQVRJT05fQ09VTlQgPiAwLCBuYS5ybSA9IFRSVUUpLFxuICAgIC5ncm91cHMgPSBcImRyb3BcIlxuICApXG5cbiMgU3RlcCAyOiBDb3VudCBob3cgbWFueSBJQXMgd2VyZSBmaXhhdGVkIHBlciB0cmlhbFxudHJpYWxfYWxsX2ZvdXJfaWEgPC0gdHJpYWxfaWFfc3VtbWFyeSAlPiVcbiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIFRSSUFMX0lOREVYKSAlPiVcbiAgc3VtbWFyaXNlKFxuICAgIHVuaXF1ZV9JQXNfZml4YXRlZCA9IHN1bShmaXhhdGVkKSxcbiAgICBsb29rZWRfYWxsX2ZvdXJfSUEgPSBhcy5pbnRlZ2VyKHVuaXF1ZV9JQXNfZml4YXRlZCA9PSA0KSxcbiAgICAuZ3JvdXBzID0gXCJkcm9wXCJcbiAgKVxuXG4jIFN0ZXAgMzogSm9pbiBiYWNrIHRvIG1haW4gZGF0YVxub3J0aG9fZGF0YSA8LSBvcnRob19kYXRhICU+JVxuICBsZWZ0X2pvaW4odHJpYWxfYWxsX2ZvdXJfaWEgJT4lIHNlbGVjdChSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgVFJJQUxfSU5ERVgsIGxvb2tlZF9hbGxfZm91cl9JQSksXG4gICAgICAgICAgICBieSA9IGMoXCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTFwiLCBcIlRSSUFMX0lOREVYXCIpKVxuYGBgIn0= -->
-<pre class="r"><code># Step 1: Summarize whether each IA had fixation &gt; 0
-trial_ia_summary &lt;- ortho_data %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX, IA_LABEL) %&gt;%
-  summarise(
-    fixated = any(IA_FIXATION_COUNT &gt; 0, na.rm = TRUE),
-    .groups = &quot;drop&quot;
-  )
-
-# Step 2: Count how many IAs were fixated per trial
-trial_all_four_ia &lt;- trial_ia_summary %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %&gt;%
-  summarise(
-    unique_IAs_fixated = sum(fixated),
-    looked_all_four_IA = as.integer(unique_IAs_fixated == 4),
-    .groups = &quot;drop&quot;
-  )
-
-# Step 3: Join back to main data
-ortho_data &lt;- ortho_data %&gt;%
-  left_join(trial_all_four_ia %&gt;% select(RECORDING_SESSION_LABEL, TRIAL_INDEX, looked_all_four_IA),
-            by = c(&quot;RECORDING_SESSION_LABEL&quot;, &quot;TRIAL_INDEX&quot;))</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
-<div id="creating-variable-for-total-trials-and-at-least-12-accurate-trials" class="section level2">
-<h2>Creating variable for total trials and at least 12 accurate
-trials</h2>
+<div id="descriptive-stats" class="section level2">
+<h2>Descriptive Stats</h2>
+<p>The looked_all_four_IA variable indicates if the participant looked
+at all the four variables. We need: For each participant, how many
+trials did they look at all four IAs in each group Here is the summary
+stats for it:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdGVwIDE6IENyZWF0ZSBhY2N1cmFjeV9oaWdoX2xvdyB2YXJpYWJsZVxub3J0aG9fZGF0YSA8LSBvcnRob19kYXRhICU+JVxuICBtdXRhdGUoXG4gICAgYWNjdXJhY3lfaGlnaF9sb3cgPSBhcy5pbnRlZ2VyKFJlc3BvbnNlX0Nob2ljZSAlaW4lIGMoXCJIaWdoX09ydGhvXCIsIFwiTG93X09ydGhvXCIpKVxuICApXG4jIFN0ZXAgMTogQ29tcHV0ZSBhY2N1cmFjeSBwZXIgdHJpYWwgKGUuZy4sIHRyZWF0IGEgdHJpYWwgYXMgXCJjb3JyZWN0XCIgaWYgYWxsIHJvd3MgYXJlIGNvcnJlY3QpXG5cbnRyaWFsX2FjY3VyYWN5IDwtIG9ydGhvX2RhdGEgJT4lXG4gIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICB0cmlhbF9jb3JyZWN0ID0gYXMuaW50ZWdlcihhbnkoYWNjdXJhY3lfaGlnaF9sb3cgPT0gMSwgbmEucm0gPSBUUlVFKSksXG4gICAgICAuZ3JvdXBzID0gXCJkcm9wXCJcbiAgKVxuXG4jIFN0ZXAgMjogQ291bnQgaG93IG1hbnkgdHJpYWxzIHdlcmUgYWNjdXJhdGUgcGVyIHN1YmplY3Rcblxuc3ViamVjdF9zdW1tYXJ5IDwtIHRyaWFsX2FjY3VyYWN5ICU+JVxuICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICB0b3RhbF90cmlhbHMgPSBuKCksXG4gICAgYWNjdXJhdGVfdHJpYWxzID0gc3VtKHRyaWFsX2NvcnJlY3QpLFxuICAgIGF0X2xlYXN0XzEyX2FjY3VyYXRlID0gYWNjdXJhdGVfdHJpYWxzID49IDEyLFxuICAgIC5ncm91cHMgPSBcImRyb3BcIlxuICApXG5cbiMgU3RlcCAzOiBKb2luIHRoaXMgYmFjayB0byB5b3VyIG9yaWdpbmFsIGV5ZSB0cmFja2luZyBkYXRhXG5vcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lXG4gIGxlZnRfam9pbihzdWJqZWN0X3N1bW1hcnkgJT4lIHNlbGVjdChSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgYWNjdXJhdGVfdHJpYWxzLCBhdF9sZWFzdF8xMl9hY2N1cmF0ZSksIGJ5ID0gXCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTFwiKVxuXG5gYGAifQ== -->
-<pre class="r"><code># Step 1: Create accuracy_high_low variable
-ortho_data &lt;- ortho_data %&gt;%
-  mutate(
-    accuracy_high_low = as.integer(Response_Choice %in% c(&quot;High_Ortho&quot;, &quot;Low_Ortho&quot;))
-  )
-# Step 1: Compute accuracy per trial (e.g., treat a trial as &quot;correct&quot; if all rows are correct)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTdGVwIDE6IEdldCB1bmlxdWUgdHJpYWwtbGV2ZWwgcm93cyB3aXRoIGdyb3VwIGluZm8gYW5kIGxvb2tlZF9hbGxfZm91cl9JQVxuVHJpYWxfbGV2ZWxfSUEgPC0gb3J0aG9fZGF0YSAlPiVcbiAgc2VsZWN0KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBHcm91cCwgVHJpYWxfSW5kZXhfLCBsb29rZWRfYWxsX2ZvdXJfSUEpJT4lXG4gIGRpc3RpbmN0KClcblxuIyBTdGVwIDI6IENvdW50IG51bWJlciBvZiB0cmlhbHMgd2hlcmUgYWxsIDQgSUFzIHdlcmUgZml4YXRlZCBwZXIgc3ViamVjdCBhbmQgZ3JvdXBcbnRyaWFsc19hbGxfZm91cl9ieV9ncm91cCA8LSBUcmlhbF9sZXZlbF9JQSAlPiVcbiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIEdyb3VwKSAlPiVcbiAgc3VtbWFyaXNlKFxuICAgIHRyaWFsc193aXRoX2FsbF9mb3VyX0lBID0gc3VtKGxvb2tlZF9hbGxfZm91cl9JQSA9PSAxLCBuYS5ybSA9IFRSVUUpLFxuICAgIC5ncm91cHMgPSBcImRyb3BcIlxuICApXG5cbmBgYCJ9 -->
+<pre class="r"><code># Step 1: Get unique trial-level rows with group info and looked_all_four_IA
+Trial_level_IA &lt;- ortho_data %&gt;%
+  select(RECORDING_SESSION_LABEL, Group, Trial_Index_, looked_all_four_IA)%&gt;%
+  distinct()
 
-trial_accuracy &lt;- ortho_data %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %&gt;%
+# Step 2: Count number of trials where all 4 IAs were fixated per subject and group
+trials_all_four_by_group &lt;- Trial_level_IA %&gt;%
+  group_by(RECORDING_SESSION_LABEL, Group) %&gt;%
   summarise(
-    trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
-      .groups = &quot;drop&quot;
-  )
-
-# Step 2: Count how many trials were accurate per subject
-
-subject_summary &lt;- trial_accuracy %&gt;%
-  group_by(RECORDING_SESSION_LABEL) %&gt;%
-  summarise(
-    total_trials = n(),
-    accurate_trials = sum(trial_correct),
-    at_least_12_accurate = accurate_trials &gt;= 12,
+    trials_with_all_four_IA = sum(looked_all_four_IA == 1, na.rm = TRUE),
     .groups = &quot;drop&quot;
   )
-
-# Step 3: Join this back to your original eye tracking data
-ortho_data &lt;- ortho_data %&gt;%
-  left_join(subject_summary %&gt;% select(RECORDING_SESSION_LABEL, accurate_trials, at_least_12_accurate), by = &quot;RECORDING_SESSION_LABEL&quot;)
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-</div>
-<div id="adding-good-trials-variable" class="section level2">
-<h2>Adding Good Trials variable</h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFN0ZXAgMjogTWFyayBcImdvb2RcIiB0cmlhbHMgcGVyIHN1YmplY3QtdHJpYWxcbmdvb2RfdHJpYWxzIDwtIG9ydGhvX2RhdGEgJT4lXG4gIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICB0cmlhbF9jb3JyZWN0ID0gYXMuaW50ZWdlcihhbnkoYWNjdXJhY3lfaGlnaF9sb3cgPT0gMSwgbmEucm0gPSBUUlVFKSksXG4gICAgZml4YXRlZF9hbGxfZm91ciA9IGFueShsb29rZWRfYWxsX2ZvdXJfSUEgPT0gMSwgbmEucm0gPSBUUlVFKSxcbiAgICBnb29kX3RyaWFsID0gYXMuaW50ZWdlcih0cmlhbF9jb3JyZWN0ICYgZml4YXRlZF9hbGxfZm91ciksXG4gICAgLmdyb3VwcyA9IFwiZHJvcFwiXG4gIClcblxuXG4jIFN0ZXAgMzogQ291bnQgbnVtYmVyIG9mIGdvb2QgdHJpYWxzIHBlciBwYXJ0aWNpcGFudFxuZ29vZF90cmlhbF9zdW1tYXJ5IDwtIGdvb2RfdHJpYWxzICU+JVxuICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCkgJT4lXG4gIHN1bW1hcmlzZShcbiAgICBnb29kX3RyaWFsX2NvdW50ID0gc3VtKGdvb2RfdHJpYWwpLFxuICAgIC5ncm91cHMgPSBcImRyb3BcIlxuICApXG5cbiMgU3RlcCA0OiBKb2luIGJhY2sgdG8geW91ciBvcmlnaW5hbCBkYXRhXG5vcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lXG4gIGxlZnRfam9pbihnb29kX3RyaWFsX3N1bW1hcnksIGJ5ID0gXCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTFwiKVxuYGBgIn0= -->
-<pre class="r"><code>
-# Step 2: Mark &quot;good&quot; trials per subject-trial
-good_trials &lt;- ortho_data %&gt;%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %&gt;%
-  summarise(
-    trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
-    fixated_all_four = any(looked_all_four_IA == 1, na.rm = TRUE),
-    good_trial = as.integer(trial_correct &amp; fixated_all_four),
-    .groups = &quot;drop&quot;
-  )
-
-
-# Step 3: Count number of good trials per participant
-good_trial_summary &lt;- good_trials %&gt;%
-  group_by(RECORDING_SESSION_LABEL) %&gt;%
-  summarise(
-    good_trial_count = sum(good_trial),
-    .groups = &quot;drop&quot;
-  )
-
-# Step 4: Join back to your original data
-ortho_data &lt;- ortho_data %&gt;%
-  left_join(good_trial_summary, by = &quot;RECORDING_SESSION_LABEL&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="section" class="section level2">
-<h2></h2>
-</div>
-<div id="extracting-data" class="section level2">
-<h2>Extracting Data</h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxud3JpdGVfY3N2KG9ydGhvX2RhdGEsIFwiMjAyNV8wNF8wMl9PcnRob19EYXRhX3ZhcmlhYmxlc19hZGRlZC5jc3ZcIilcbmBgYCJ9 -->
-<pre class="r"><code>write_csv(ortho_data, &quot;2025_04_02_Ortho_Data_variables_added.csv&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIk9ydGhvIGRhdGEgLSBBZGRpbmcgdmFyaWFibGVzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShoZXJlKQ0KYGBgDQoNCg0KIyMgTG9hZGluZyBkYXRhDQoNCmBgYHtyfQ0Kb3J0aG9fZGF0YSA8LSByZWFkX2NzdihoZXJlKCJEYXRhIiwgIjIwMjVfMDNfMzFfb3J0aG9fZGF0YV9TUy5jc3YiKSkNCmBgYA0KDQojIyBDcmVhdGluZyB2YXJpYWJsZSB0aGF0IGluZGljYXRlZCBpZiBwYXJ0aWNpcGFudCBsb29rZWQgYXQgYWxsIGZvdXIgaW50ZXJlc3QgYXJlYXMNCg0KYGBge3J9DQojIFN0ZXAgMTogU3VtbWFyaXplIHdoZXRoZXIgZWFjaCBJQSBoYWQgZml4YXRpb24gPiAwDQp0cmlhbF9pYV9zdW1tYXJ5IDwtIG9ydGhvX2RhdGEgJT4lDQogIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCwgSUFfTEFCRUwpICU+JQ0KICBzdW1tYXJpc2UoDQogICAgZml4YXRlZCA9IGFueShJQV9GSVhBVElPTl9DT1VOVCA+IDAsIG5hLnJtID0gVFJVRSksDQogICAgLmdyb3VwcyA9ICJkcm9wIg0KICApDQoNCiMgU3RlcCAyOiBDb3VudCBob3cgbWFueSBJQXMgd2VyZSBmaXhhdGVkIHBlciB0cmlhbA0KdHJpYWxfYWxsX2ZvdXJfaWEgPC0gdHJpYWxfaWFfc3VtbWFyeSAlPiUNCiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIFRSSUFMX0lOREVYKSAlPiUNCiAgc3VtbWFyaXNlKA0KICAgIHVuaXF1ZV9JQXNfZml4YXRlZCA9IHN1bShmaXhhdGVkKSwNCiAgICBsb29rZWRfYWxsX2ZvdXJfSUEgPSBhcy5pbnRlZ2VyKHVuaXF1ZV9JQXNfZml4YXRlZCA9PSA0KSwNCiAgICAuZ3JvdXBzID0gImRyb3AiDQogICkNCg0KIyBTdGVwIDM6IEpvaW4gYmFjayB0byBtYWluIGRhdGENCm9ydGhvX2RhdGEgPC0gb3J0aG9fZGF0YSAlPiUNCiAgbGVmdF9qb2luKHRyaWFsX2FsbF9mb3VyX2lhICU+JSBzZWxlY3QoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIFRSSUFMX0lOREVYLCBsb29rZWRfYWxsX2ZvdXJfSUEpLA0KICAgICAgICAgICAgYnkgPSBjKCJSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCIsICJUUklBTF9JTkRFWCIpKQ0KYGBgDQoNCg0KIyMgQ3JlYXRpbmcgdmFyaWFibGUgZm9yIHRvdGFsIHRyaWFscyBhbmQgYXQgbGVhc3QgMTIgYWNjdXJhdGUgdHJpYWxzDQoNCmBgYHtyfQ0KIyBTdGVwIDE6IENyZWF0ZSBhY2N1cmFjeV9oaWdoX2xvdyB2YXJpYWJsZQ0Kb3J0aG9fZGF0YSA8LSBvcnRob19kYXRhICU+JQ0KICBtdXRhdGUoDQogICAgYWNjdXJhY3lfaGlnaF9sb3cgPSBhcy5pbnRlZ2VyKFJlc3BvbnNlX0Nob2ljZSAlaW4lIGMoIkhpZ2hfT3J0aG8iLCAiTG93X09ydGhvIikpDQogICkNCiMgU3RlcCAxOiBDb21wdXRlIGFjY3VyYWN5IHBlciB0cmlhbCAoZS5nLiwgdHJlYXQgYSB0cmlhbCBhcyAiY29ycmVjdCIgaWYgYWxsIHJvd3MgYXJlIGNvcnJlY3QpDQoNCnRyaWFsX2FjY3VyYWN5IDwtIG9ydGhvX2RhdGEgJT4lDQogIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBUUklBTF9JTkRFWCkgJT4lDQogIHN1bW1hcmlzZSgNCiAgICB0cmlhbF9jb3JyZWN0ID0gYXMuaW50ZWdlcihhbnkoYWNjdXJhY3lfaGlnaF9sb3cgPT0gMSwgbmEucm0gPSBUUlVFKSksDQogICAgICAuZ3JvdXBzID0gImRyb3AiDQogICkNCg0KIyBTdGVwIDI6IENvdW50IGhvdyBtYW55IHRyaWFscyB3ZXJlIGFjY3VyYXRlIHBlciBzdWJqZWN0DQoNCnN1YmplY3Rfc3VtbWFyeSA8LSB0cmlhbF9hY2N1cmFjeSAlPiUNCiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwpICU+JQ0KICBzdW1tYXJpc2UoDQogICAgdG90YWxfdHJpYWxzID0gbigpLA0KICAgIGFjY3VyYXRlX3RyaWFscyA9IHN1bSh0cmlhbF9jb3JyZWN0KSwNCiAgICBhdF9sZWFzdF8xMl9hY2N1cmF0ZSA9IGFjY3VyYXRlX3RyaWFscyA+PSAxMiwNCiAgICAuZ3JvdXBzID0gImRyb3AiDQogICkNCg0KIyBTdGVwIDM6IEpvaW4gdGhpcyBiYWNrIHRvIHlvdXIgb3JpZ2luYWwgZXllIHRyYWNraW5nIGRhdGENCm9ydGhvX2RhdGEgPC0gb3J0aG9fZGF0YSAlPiUNCiAgbGVmdF9qb2luKHN1YmplY3Rfc3VtbWFyeSAlPiUgc2VsZWN0KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBhY2N1cmF0ZV90cmlhbHMsIGF0X2xlYXN0XzEyX2FjY3VyYXRlKSwgYnkgPSAiUkVDT1JESU5HX1NFU1NJT05fTEFCRUwiKQ0KDQpgYGANCg0KIyMgQWRkaW5nIEdvb2QgVHJpYWxzIHZhcmlhYmxlDQoNCmBgYHtyfQ0KDQojIFN0ZXAgMjogTWFyayAiZ29vZCIgdHJpYWxzIHBlciBzdWJqZWN0LXRyaWFsDQpnb29kX3RyaWFscyA8LSBvcnRob19kYXRhICU+JQ0KICBncm91cF9ieShSRUNPUkRJTkdfU0VTU0lPTl9MQUJFTCwgVFJJQUxfSU5ERVgpICU+JQ0KICBzdW1tYXJpc2UoDQogICAgdHJpYWxfY29ycmVjdCA9IGFzLmludGVnZXIoYW55KGFjY3VyYWN5X2hpZ2hfbG93ID09IDEsIG5hLnJtID0gVFJVRSkpLA0KICAgIGZpeGF0ZWRfYWxsX2ZvdXIgPSBhbnkobG9va2VkX2FsbF9mb3VyX0lBID09IDEsIG5hLnJtID0gVFJVRSksDQogICAgZ29vZF90cmlhbCA9IGFzLmludGVnZXIodHJpYWxfY29ycmVjdCAmIGZpeGF0ZWRfYWxsX2ZvdXIpLA0KICAgIC5ncm91cHMgPSAiZHJvcCINCiAgKQ0KDQoNCiMgU3RlcCAzOiBDb3VudCBudW1iZXIgb2YgZ29vZCB0cmlhbHMgcGVyIHBhcnRpY2lwYW50DQpnb29kX3RyaWFsX3N1bW1hcnkgPC0gZ29vZF90cmlhbHMgJT4lDQogIGdyb3VwX2J5KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMKSAlPiUNCiAgc3VtbWFyaXNlKA0KICAgIGdvb2RfdHJpYWxfY291bnQgPSBzdW0oZ29vZF90cmlhbCksDQogICAgLmdyb3VwcyA9ICJkcm9wIg0KICApDQoNCiMgU3RlcCA0OiBKb2luIGJhY2sgdG8geW91ciBvcmlnaW5hbCBkYXRhDQpvcnRob19kYXRhIDwtIG9ydGhvX2RhdGEgJT4lDQogIGxlZnRfam9pbihnb29kX3RyaWFsX3N1bW1hcnksIGJ5ID0gIlJFQ09SRElOR19TRVNTSU9OX0xBQkVMIikNCmBgYA0KDQojIyANCg0KIyMgRXh0cmFjdGluZyBEYXRhDQoNCmBgYHtyfQ0Kd3JpdGVfY3N2KG9ydGhvX2RhdGEsICIyMDI1XzA0XzAyX09ydGhvX0RhdGFfdmFyaWFibGVzX2FkZGVkLmNzdiIpDQpgYGANCg0KDQoNCg0KDQoNCg0KDQoNCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlN1bW1hcnkgU3RhdHMiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCmBgYHtyfQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGhlcmUpDQpgYGANCg0KDQojIyBMb2FkaW5nIGRhdGENCg0KYGBge3J9DQpvcnRob19kYXRhIDwtIHJlYWRfY3N2KGhlcmUoIkRhdGEiLCAiMjAyNV8wNF8wOV9PcnRob19EYXRhX3dpdGhfZ3JvdXBzLmNzdiIpKQ0KYGBgDQoNCiMjIENvZGUgdG8gQ3JlYXRlIGJpbmFyeSBnb29kIHRyaWFsIHZhcmlhYmxlDQoNCmBgYHtyfQ0KDQpgYGANCg0KDQojIyBEZXNjcmlwdGl2ZSBTdGF0cyANCg0KVGhlIGxvb2tlZF9hbGxfZm91cl9JQSB2YXJpYWJsZSBpbmRpY2F0ZXMgaWYgdGhlIHBhcnRpY2lwYW50IGxvb2tlZCBhdCBhbGwgdGhlIGZvdXIgdmFyaWFibGVzLiANCldlIG5lZWQ6DQpGb3IgZWFjaCBwYXJ0aWNpcGFudCwgaG93IG1hbnkgdHJpYWxzIGRpZCB0aGV5IGxvb2sgYXQgYWxsIGZvdXIgSUFzIGluIGVhY2ggZ3JvdXANCkhlcmUgaXMgdGhlIHN1bW1hcnkgc3RhdHMgZm9yIGl0Og0KDQoNCmBgYHtyfQ0KIyBTdGVwIDE6IEdldCB1bmlxdWUgdHJpYWwtbGV2ZWwgcm93cyB3aXRoIGdyb3VwIGluZm8gYW5kIGxvb2tlZF9hbGxfZm91cl9JQQ0KVHJpYWxfbGV2ZWxfSUEgPC0gb3J0aG9fZGF0YSAlPiUNCiAgc2VsZWN0KFJFQ09SRElOR19TRVNTSU9OX0xBQkVMLCBHcm91cCwgVHJpYWxfSW5kZXhfLCBsb29rZWRfYWxsX2ZvdXJfSUEpJT4lDQogIGRpc3RpbmN0KCkNCg0KIyBTdGVwIDI6IENvdW50IG51bWJlciBvZiB0cmlhbHMgd2hlcmUgYWxsIDQgSUFzIHdlcmUgZml4YXRlZCBwZXIgc3ViamVjdCBhbmQgZ3JvdXANCnRyaWFsc19hbGxfZm91cl9ieV9ncm91cCA8LSBUcmlhbF9sZXZlbF9JQSAlPiUNCiAgZ3JvdXBfYnkoUkVDT1JESU5HX1NFU1NJT05fTEFCRUwsIEdyb3VwKSAlPiUNCiAgc3VtbWFyaXNlKA0KICAgIHRyaWFsc193aXRoX2FsbF9mb3VyX0lBID0gc3VtKGxvb2tlZF9hbGxfZm91cl9JQSA9PSAxLCBuYS5ybSA9IFRSVUUpLA0KICAgIC5ncm91cHMgPSAiZHJvcCINCiAgKQ0KDQpgYGANCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQo=</div>
 
 
 
@@ -1942,7 +1861,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("Ortho_data_adding_variables.Rmd");
+  window.initializeSourceEmbed("Ortho Summary Stats.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>

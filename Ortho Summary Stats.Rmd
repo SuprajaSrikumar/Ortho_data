@@ -1,0 +1,116 @@
+---
+title: "Summary Stats"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+
+## Loading data
+
+```{r}
+ortho_data <- read_csv(here("Data", "2025_04_09_Ortho_Data_with_groups.csv"))
+```
+
+## Code to Create binary good trial variable
+
+```{r}
+
+```
+
+
+## Descriptive Stats 
+
+The looked_all_four_IA variable indicates if the participant looked at all the four variables. 
+We need:
+For each participant, how many trials did they look at all four IAs in each group
+Here is the summary stats for it:
+
+
+```{r}
+# Step 1: Get unique trial-level rows with group info and looked_all_four_IA
+Trial_level_IA <- ortho_data %>%
+  select(RECORDING_SESSION_LABEL, Group, Trial_Index_, looked_all_four_IA)%>%
+  distinct()
+
+# Step 2: Count number of trials where all 4 IAs were fixated per subject and group
+trials_all_four_by_group <- Trial_level_IA %>%
+  group_by(RECORDING_SESSION_LABEL, Group) %>%
+  summarise(
+    trials_with_all_four_IA = sum(looked_all_four_IA == 1, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
