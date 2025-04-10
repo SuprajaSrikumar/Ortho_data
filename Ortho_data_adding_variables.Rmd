@@ -81,28 +81,34 @@ ortho_data <- ortho_data %>%
 
 ```{r}
 
-# Step 1: Mark "good" trials per subject-trial
+# Step 1: Compute per-trial summary
 good_trials <- ortho_data %>%
   group_by(participant_id, OrthoET_trial_number) %>%
   summarise(
-    trial_correct = any(OrthoET_response_choice %in% c("High_Ortho", "Low_Ortho"), na.rm = TRUE),
-    fixated_all_four = any(Ortho_ET_accuracy == 1, na.rm = TRUE),
-    good_trial = as.integer(trial_correct & fixated_all_four),
+    trial_correct = any(Ortho_ET_accuracy == 1, na.rm = TRUE),
+    fixated_all_four = any(Ortho_ET_IA_inclusion == 1, na.rm = TRUE),
+    Ortho_ET_met_both_inclusion = as.integer(trial_correct & fixated_all_four),
     .groups = "drop"
   )
 
-# Step 2: Compute subject-level good_trial_count and flag
-good_trial_summary <- good_trials %>%
-  group_by(participant_id) %>%
-  summarise(
-    Ortho_ET_met_both_inclusion_count = sum(good_trial),
-    Ortho_ET_met_both_inclusion = as.integer(Ortho_ET_met_both_inclusion_count >= 12),
-    .groups = "drop"
-  )
-# Step 3: Join back to your original data
+# Step 2: Proper join — join full data frame
 ortho_data <- ortho_data %>%
-  left_join(good_trial_summary, by = "participant_id")
+  left_join(good_trials, by = c("participant_id", "OrthoET_trial_number"))
 ```
+
+```{r}
+# Step 1: From your existing good_trials data
+good_trial_counts <- good_trials %>%
+  group_by(participant_id) %>%
+  summarise(n_Ortho_ET_met_both_inclusion = sum(Ortho_ET_met_both_inclusion), .groups = "drop")
+
+ortho_data <- ortho_data %>%
+  left_join(good_trial_counts, by = "participant_id")
+
+```
+
+
+
 
 ## 
 

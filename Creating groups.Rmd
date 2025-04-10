@@ -82,7 +82,7 @@ ortho_data %>%
 
 ortho_data %>%
   filter(is.na(Group)) %>%
-  select(RECORDING_SESSION_LABEL) %>%
+  select(participant_id) %>%
   distinct()
 ```
 
