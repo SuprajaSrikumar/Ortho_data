@@ -13,7 +13,7 @@ library(here)
 ## Loading data
 
 ```{r}
-ortho_data <- read_csv(here("Data", "2025_03_31_ortho_data_SS.csv"))
+ortho_data <- read_csv(here("Data", "CLASP ORtho ET_Retrieved 7.13.20_ForBAB.csv"))
 ```
 
 ## Creating variable that indicated if participant looked at all four interest areas
@@ -21,25 +21,25 @@ ortho_data <- read_csv(here("Data", "2025_03_31_ortho_data_SS.csv"))
 ```{r}
 # Step 1: Summarize whether each IA had fixation > 0
 trial_ia_summary <- ortho_data %>%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX, IA_LABEL) %>%
+  group_by(participant_id, OrthoET_trial_number, OrthoET_IA_label) %>%
   summarise(
-    fixated = any(IA_FIXATION_COUNT > 0, na.rm = TRUE),
+    fixated = any(OrthoET_IA_fixation_count > 0, na.rm = TRUE),
     .groups = "drop"
   )
 
 # Step 2: Count how many IAs were fixated per trial
 trial_all_four_ia <- trial_ia_summary %>%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  group_by(participant_id, OrthoET_trial_number) %>%
   summarise(
     unique_IAs_fixated = sum(fixated),
-    looked_all_four_IA = as.integer(unique_IAs_fixated == 4),
+    Ortho_ET_IA_inclusion = as.integer(unique_IAs_fixated == 4),
     .groups = "drop"
   )
 
 # Step 3: Join back to main data
 ortho_data <- ortho_data %>%
-  left_join(trial_all_four_ia %>% select(RECORDING_SESSION_LABEL, TRIAL_INDEX, looked_all_four_IA),
-            by = c("RECORDING_SESSION_LABEL", "TRIAL_INDEX"))
+  left_join(trial_all_four_ia %>% select(participant_id, OrthoET_trial_number, Ortho_ET_IA_inclusion),
+            by = c("participant_id", "OrthoET_trial_number"))
 ```
 
 
@@ -49,31 +49,31 @@ ortho_data <- ortho_data %>%
 # Step 1: Create accuracy_high_low variable
 ortho_data <- ortho_data %>%
   mutate(
-    accuracy_high_low = as.integer(Response_Choice %in% c("High_Ortho", "Low_Ortho"))
+    Ortho_ET_accuracy = as.integer(OrthoET_response_choice %in% c("High_Ortho", "Low_Ortho"))
   )
 # Step 2: Compute accuracy per trial (e.g., treat a trial as "correct" if all rows are correct)
 
 trial_accuracy <- ortho_data %>%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  group_by(participant_id, OrthoET_trial_number) %>%
   summarise(
-    trial_correct = as.integer(any(accuracy_high_low == 1, na.rm = TRUE)),
+    trial_correct = as.integer(any(Ortho_ET_accuracy == 1, na.rm = TRUE)),
       .groups = "drop"
   )
 
 # Step 2: Count how many trials were accurate per subject
 
 subject_summary <- trial_accuracy %>%
-  group_by(RECORDING_SESSION_LABEL) %>%
+  group_by(participant_id) %>%
   summarise(
     total_trials = n(),
     accurate_trials = sum(trial_correct),
-    at_least_12_accurate = accurate_trials >= 12,
+    Ortho_ET_accuracy_inclusion = accurate_trials >= 12,
     .groups = "drop"
   )
 
 # Step 3: Join this back to your original eye tracking data
 ortho_data <- ortho_data %>%
-  left_join(subject_summary %>% select(RECORDING_SESSION_LABEL, accurate_trials, at_least_12_accurate), by = "RECORDING_SESSION_LABEL")
+  left_join(subject_summary %>% select(participant_id, accurate_trials, Ortho_ET_accuracy_inclusion), by = "participant_id")
 
 ```
 
@@ -83,25 +83,25 @@ ortho_data <- ortho_data %>%
 
 # Step 1: Mark "good" trials per subject-trial
 good_trials <- ortho_data %>%
-  group_by(RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  group_by(participant_id, OrthoET_trial_number) %>%
   summarise(
-    trial_correct = any(Response_Choice %in% c("High_Ortho", "Low_Ortho"), na.rm = TRUE),
-    fixated_all_four = any(looked_all_four_IA == 1, na.rm = TRUE),
+    trial_correct = any(OrthoET_response_choice %in% c("High_Ortho", "Low_Ortho"), na.rm = TRUE),
+    fixated_all_four = any(Ortho_ET_accuracy == 1, na.rm = TRUE),
     good_trial = as.integer(trial_correct & fixated_all_four),
     .groups = "drop"
   )
 
 # Step 2: Compute subject-level good_trial_count and flag
 good_trial_summary <- good_trials %>%
-  group_by(RECORDING_SESSION_LABEL) %>%
+  group_by(participant_id) %>%
   summarise(
-    good_trial_count = sum(good_trial),
-    has_12_good_trials = as.integer(good_trial_count >= 12),
+    Ortho_ET_met_both_inclusion_count = sum(good_trial),
+    Ortho_ET_met_both_inclusion = as.integer(Ortho_ET_met_both_inclusion_count >= 12),
     .groups = "drop"
   )
 # Step 3: Join back to your original data
 ortho_data <- ortho_data %>%
-  left_join(good_trial_summary, by = "RECORDING_SESSION_LABEL")
+  left_join(good_trial_summary, by = "participant_id")
 ```
 
 ## 
@@ -109,7 +109,7 @@ ortho_data <- ortho_data %>%
 ## Extracting Data
 
 ```{r}
-write_csv(ortho_data, "2025_04_02_Ortho_Data_variables_added.csv")
+write_csv(ortho_data, "2025_04_10_ortho_data.csv")
 ```
 
 
