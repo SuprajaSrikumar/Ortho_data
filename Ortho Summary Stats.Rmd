@@ -1,29 +1,132 @@
 ---
 title: "Summary Stats"
-output: html_notebook
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
 ---
 
 
-```{r}
+```{r include=FALSE}
 library(tidyverse)
 library(gt)
 library(here)
 ```
 
 
-## Loading data
-
-```{r}
+```{r include=FALSE}
 ortho_data <- read_csv(here("Data", "2025_04_09_Ortho_Data_with_groups.csv"))
 ```
 
-## Descriptive Stats 
 
-A “good” trial was deined as one in which the participant (a) fixated on all four interest areas (IAs), and (b) made an accurate response on at least 12 trials — that is, they selected either the high- or low-orthographic probability nonword over the illegal or unpronounceable foil on at least 12 trials
+### 1. Number of Children in Each Group
+
+The table below provides information on the number of participants in each group.
+
+```{r echo=FALSE}
+# Number of children in each group
+
+children_by_group <- ortho_data %>%
+  distinct(RECORDING_SESSION_LABEL, Group) %>%
+  count(Group, name = "n_children") %>%
+  gt() %>%
+  cols_label(
+    Group = "Group",
+    n_children = "Number of Participants (n)") %>%
+  tab_header(
+    title = "Table 1: Number of participants in each group"
+  )
+
+children_by_group
+```
+
+### 2. Trials Where Participants Fixated on All Four Interest Areas (IAs)
+
+The first inclusion criteria indicates that the participant must have looked at all four interest areas. Table 2 provides information on the number of trials that each participant (per group) fixated on all four IAs.
+
+```{r echo=FALSE}
+
+# Step 1: Create trial level data based on Trial index
+
+trial_level_data <- ortho_data %>%
+  mutate(looked_all_four_IA = as.numeric(looked_all_four_IA)) %>%  
+  group_by(Group, RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  summarise(
+    fixated_all_four = sum(looked_all_four_IA) == 4,  
+    .groups = "drop"
+  )
+
+# Step 2: Count how many trials were fixated vs not, per participant
+fixation_counts <- trial_level_data %>%
+  group_by(Group, RECORDING_SESSION_LABEL) %>%
+  summarise(
+    `Number of Trials Participants Fixated on All IAs` = sum(fixated_all_four),
+    `Number of Trials Participants DID NOT Fixate on All IAs` = sum(!fixated_all_four),
+    .groups = "drop"
+  ) %>%
+  rename(ID = RECORDING_SESSION_LABEL)
+
+fixation_counts %>%
+  gt()
+
+# Step 3: Rename columns to match your format
+#fixation_table <- fixation_summary %>%
+  #rename(
+  #  Group = Group,
+  #  ID = RECORDING_SESSION_LABEL,
+   # `Number of Trials Participants Fixated on All IAs` = Trials_Fixated_All_IAs,
+   # `Number of Trials Participants DID NOT Fixate on All IAs` = Trials_Not_Fixated_All_IAs
+#  )
+
+# Step 4: Display as a gt table (optional)
+#fixation_table %>%
+  #gt()
+
+```
+
+### 3. Accuracy of Trials per Participant
+
+The second inclusion criteria indicates that the participant must have been accurate in at least 12 trials (that is, they selected either the high- or low-orthographic probability nonword over the illegal or unpronounceable foil on at least 12 trials). Table 2 provides information on the number of trials that each participant was accurate on.
+
+```{r echo=FALSE}
+# Step 1: Ensure accuracy column is numeric (in case it's "1"/"0" as string)
+ortho_data <- ortho_data %>%
+  mutate(accuracy_high_low = as.numeric(accuracy_high_low))
+
+# Step 2: Collapse to one row per trial
+# Here we assume that if any IA in a trial is marked inaccurate (0), the whole trial is inaccurate
+# Or change logic as needed depending on your task
+trial_accuracy <- ortho_data %>%
+  group_by(Group, RECORDING_SESSION_LABEL, TRIAL_INDEX) %>%
+  summarise(
+    trial_accurate = all(accuracy_high_low == 1),  # TRUE = accurate
+    .groups = "drop"
+  )
+
+# Step 3: Count accurate and inaccurate trials per participant
+accuracy_summary <- trial_accuracy %>%
+  group_by(Group, RECORDING_SESSION_LABEL) %>%
+  summarise(
+    `Accurate` = sum(trial_accurate),
+    `Inaccurate` = sum(!trial_accurate),
+    .groups = "drop"
+  ) %>%
+  rename(ID = RECORDING_SESSION_LABEL)
+
+# Step 4: View summary table
+accuracy_summary %>%
+  gt()
+
+```
+
+
+### 4. Number of "Good" Trials
+
+A “good” trial was defined as one in which the participant (a) fixated on all four interest areas (IAs), and (b) made an accurate response on at least 12 trials — that is, they selected either the high- or low-orthographic probability nonword over the illegal or unpronounceable foil on at least 12 trials
 
 The table below shows the number and percentage of participants excluded due to either having fewer than 12 good trials or not fixated on all four IAs, across the three groups:
 
-```{r}
+```{r echo=FALSE}
 library(dplyr)
 library(gt)
 
@@ -50,12 +153,12 @@ participants_lost_summary %>%
   cols_label(
     Group = "Group",
     total_participants = "Total Participants",
-    participants_with_12_or_more_good = "Passed",
+    participants_with_12_or_more_good = "Passed the criteria",
     participants_lost = "Lost/Failed the criteria",
     percent_lost = "Percent Lost"
   ) %>%
   tab_header(
-    title = "Participants Lost Due to Fewer than 12 Good Trials"
+    title = "Participants Lost Due to Failure to Fulfill Criteria"
   )
 
 ```
@@ -64,7 +167,7 @@ Among participants excluded, it was examined whether their exclusion was primari
 
 The table below summarizes how many behaviorally accurate participants were excluded from each group:
 
-```{r}
+```{r echo=FALSE}
 
 # Step 1: Get trial-level data (one row per trial)
 trial_level_data <- ortho_data %>%
