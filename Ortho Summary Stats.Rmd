@@ -6,6 +6,7 @@ output: html_notebook
 
 ```{r}
 library(tidyverse)
+library(gt)
 library(here)
 ```
 
@@ -16,33 +17,101 @@ library(here)
 ortho_data <- read_csv(here("Data", "2025_04_09_Ortho_Data_with_groups.csv"))
 ```
 
-## Code to Create binary good trial variable
+## Descriptive Stats 
+
+A “good” trial was deined as one in which the participant (a) fixated on all four interest areas (IAs), and (b) made an accurate response on at least 12 trials — that is, they selected either the high- or low-orthographic probability nonword over the illegal or unpronounceable foil on at least 12 trials
+
+The table below shows the number and percentage of participants excluded due to either having fewer than 12 good trials or not fixated on all four IAs, across the three groups:
 
 ```{r}
+library(dplyr)
+library(gt)
+
+# Step 1: Get one row per participant
+participant_level_data <- ortho_data %>%
+  select(RECORDING_SESSION_LABEL, Group, has_12_good_trials) %>%
+  distinct()
+
+# Step 2: Summarize by group — how many are lost
+participants_lost_summary <- participant_level_data %>%
+  group_by(Group) %>%
+  summarise(
+    total_participants = n(),
+    participants_with_12_or_more_good = sum(has_12_good_trials == 1),
+    participants_lost = sum(has_12_good_trials == 0),
+    percent_lost = participants_lost / total_participants,
+    .groups = "drop"
+  )
+
+# Step 3: Display in a `gt` table
+participants_lost_summary %>%
+  gt() %>%
+  fmt_percent(columns = percent_lost, decimals = 0) %>%
+  cols_label(
+    Group = "Group",
+    total_participants = "Total Participants",
+    participants_with_12_or_more_good = "Passed",
+    participants_lost = "Lost/Failed the criteria",
+    percent_lost = "Percent Lost"
+  ) %>%
+  tab_header(
+    title = "Participants Lost Due to Fewer than 12 Good Trials"
+  )
 
 ```
 
+Among participants excluded, it was examined whether their exclusion was primarily due to failure to meet the fixation criterion rather than poor task performance. Specifically, participants who were accurate on at least 12 trials (i.e., selected either a high- or low-orthographic nonword), but were still excluded because they did not meet the requirement of fixating on all four interest areas (IAs) were identified.
 
-## Descriptive Stats 
-
-The looked_all_four_IA variable indicates if the participant looked at all the four variables. 
-We need:
-For each participant, how many trials did they look at all four IAs in each group
-Here is the summary stats for it:
-
+The table below summarizes how many behaviorally accurate participants were excluded from each group:
 
 ```{r}
-# Step 1: Get unique trial-level rows with group info and looked_all_four_IA
-Trial_level_IA <- ortho_data %>%
-  select(RECORDING_SESSION_LABEL, Group, Trial_Index_, looked_all_four_IA)%>%
+
+# Step 1: Get trial-level data (one row per trial)
+trial_level_data <- ortho_data %>%
+  select(RECORDING_SESSION_LABEL, TRIAL_INDEX, Group, has_12_good_trials, accuracy_high_low) %>%
   distinct()
 
-# Step 2: Count number of trials where all 4 IAs were fixated per subject and group
-trials_all_four_by_group <- Trial_level_IA %>%
+# Step 2: Filter to participants who were excluded (i.e., < 12 good trials)
+excluded_participants <- trial_level_data %>%
+  select(RECORDING_SESSION_LABEL, Group, has_12_good_trials) %>%
+  distinct() %>%
+  filter(has_12_good_trials == 0)
+
+# Step 3: Join back to get their accuracy across trials
+excluded_trials <- trial_level_data %>%
+  semi_join(excluded_participants, by = "RECORDING_SESSION_LABEL")
+
+# Step 4: Count number of accurate trials per excluded participant
+excluded_accuracy_summary <- excluded_trials %>%
   group_by(RECORDING_SESSION_LABEL, Group) %>%
   summarise(
-    trials_with_all_four_IA = sum(looked_all_four_IA == 1, na.rm = TRUE),
+    accurate_trials = sum(accuracy_high_low == 1, na.rm = TRUE),
     .groups = "drop"
+  ) %>%
+  mutate(accuracy_12_or_more = as.integer(accurate_trials >= 12))
+
+# Step 5: Summarize by group
+accuracy_among_excluded <- excluded_accuracy_summary %>%
+  group_by(Group) %>%
+  summarise(
+    n_excluded = n(),
+    n_accurate_12_or_more = sum(accuracy_12_or_more),
+    proportion_accurate_12_or_more = mean(accuracy_12_or_more),
+    .groups = "drop"
+  )
+
+# Step 6: Display using gt
+accuracy_among_excluded %>%
+  gt() %>%
+  fmt_percent(columns = proportion_accurate_12_or_more, decimals = 0) %>%
+  cols_label(
+    Group = "Group",
+    n_excluded = "Excluded Participants (<12 Good Trials)",
+    n_accurate_12_or_more = "Had ≥12 Accurate Trials",
+    proportion_accurate_12_or_more = "Percent Accurate"
+  ) %>%
+  tab_header(
+    title = "Accurate but Excluded: Participants with ≥12 Accurate Trials but <12 'Good' Trials"
   )
 
 ```
