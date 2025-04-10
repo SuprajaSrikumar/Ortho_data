@@ -12,7 +12,7 @@ library(here)
 ## Loading data
 
 ```{r}
-ortho_data <- read_csv(here("Data", "2025_04_02_Ortho_Data_variables_added.csv"))
+ortho_data <- read_csv(here("Data", "2025_04_10_Ortho_Data.csv"))
 ```
 
 ## Creating group variable
@@ -37,9 +37,9 @@ dyslexia_ids <- c("c194001", "c194002", "c194003", "c194004", "c194006", "c19400
 # Assign groups
 ortho_data <- ortho_data %>%
   mutate(Group = case_when(
-    RECORDING_SESSION_LABEL %in% td_ids ~ "TD",
-    RECORDING_SESSION_LABEL %in% compensated_ids ~ "Compensated",
-    RECORDING_SESSION_LABEL %in% dyslexia_ids ~ "Dyslexia",
+    participant_id %in% td_ids ~ "TD",
+    participant_id %in% compensated_ids ~ "Compensated",
+    participant_id %in% dyslexia_ids ~ "Dyslexia",
     TRUE ~ NA_character_
   ))
 
@@ -52,7 +52,7 @@ ortho_data <- ortho_data %>%
 ## TD
 ortho_data %>%
   filter(Group == "TD") %>%
-  select(RECORDING_SESSION_LABEL) %>%
+  select(participant_id) %>%
   distinct()
 ```
 
@@ -60,7 +60,7 @@ ortho_data %>%
 ## Compensated
 ortho_data %>%
   filter(Group == "Compensated") %>%
-  select(RECORDING_SESSION_LABEL) %>%
+  select(participant_id) %>%
   distinct()
 ```
 
@@ -69,7 +69,7 @@ ortho_data %>%
 ## Dyslexia
 ortho_data %>%
   filter(Group == "Dyslexia") %>%
-  select(RECORDING_SESSION_LABEL) %>%
+  select(participant_id) %>%
   distinct()
 ```
 
@@ -96,7 +96,7 @@ ortho_data_clean <- ortho_data %>%
 ## Extracting Data
 
 ```{r}
-write_csv(ortho_data_clean, "2025_04_09_Ortho_Data_with_groups.csv")
+write_csv(ortho_data_clean, "2025_04_10_Ortho_Data_with_groups.csv")
 ```
 
 
