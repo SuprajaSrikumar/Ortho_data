@@ -15,7 +15,7 @@ library(here)
 
 
 ```{r include=FALSE}
-ortho_data <- read_csv(here("Data", "2025_04_09_Ortho_Data_with_groups.csv"))
+ortho_data <- read_csv(here("Data", "2025_04_10_Ortho_Data_with_groups.csv"))
 ```
 
 
@@ -33,7 +33,7 @@ children_by_group <- ortho_data %>%
   cols_label(
     Group = "Group",
     n_children = "Number of Participants (n)") %>%
-  tab_header(
+ tab_header(
     title = "Table 1: Number of participants in each group"
   )
 
