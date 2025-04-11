@@ -41,6 +41,7 @@ Participants were included in the analyses if they met both of the following eye
 
 This inclusion process was implemented to ensure that participants understood the task instructions and attended to all the presented stimuli before making their selection. By applying these filters, the aim was to increase the reliability of the response time and eye-tracking measures used in subsequent analyses.
 
+
 ```{r}
 #| include: false
 ## Loading Libraries
@@ -57,6 +58,8 @@ library(gt)
 ortho_data <- read_csv(here("Data", "2025_04_10_Ortho_Data_final.csv"))
 ```
 
+Based on this inclusion criteria, the TD group had 22 participants, compensated group had 16 participants and the dyslexia group had 28 participants.
+
 \
 
 ### Descriptive Statistics
@@ -64,10 +67,10 @@ ortho_data <- read_csv(here("Data", "2025_04_10_Ortho_Data_final.csv"))
 
 #### 1. Response Time (RT) when High_ortho is selected
 \
-Descriptive statistics for response time (in seconds) on trials where participants selected the high-orthographic probability item are presented in Table 1. 
 
 ```{r}
 #| echo: false
+
 # Step 1: Filter for High_Ortho responses
 high_ortho_rt <- ortho_data %>%
   filter(OrthoET_response_choice == "High_Ortho")
@@ -95,7 +98,37 @@ high_ortho_summary <- high_ortho_rt_unique %>%
     .groups = "drop"
   )
 
-# Step 4: Display using gt
+# Number of total trials per group
+high_ortho_rt_unique %>%
+  count(Group, name = "Total_Trials")%>%
+  gt()
+
+# Number of trials per participant
+high_trials_per_participant <- high_ortho_rt_unique %>%
+  count(participant_id, Group, name = "Trials_Selected_High_Ortho")
+
+# summary (min/max/mean) number of High_Ortho selections per participant by group
+high_trials_per_participant %>%
+  group_by(Group) %>%
+  summarise(
+    Min = min(Trials_Selected_High_Ortho),
+    Max = max(Trials_Selected_High_Ortho),
+    Mean = mean(Trials_Selected_High_Ortho),
+    SD = sd(Trials_Selected_High_Ortho),
+    .groups = "drop"
+  ) %>%
+  gt()
+
+```
+
+For the response time analysis involving trials where participants selected the High_Ortho option, a total of 302 trials were included from the TD group, 350 from the dyslexia group, and 211 from the compensated group. On average, participants contributed between 12 and 14 trials each (TD: M = 13.73, SD = 1.86; Dyslexia: M = 12.50, SD = 2.32; Compensated: M = 13.19, SD = 2.83), with the number of High_Ortho selections ranging from 7 to 17 trials.
+
+Descriptive statistics for response time (in seconds) on trials where participants selected the high-orthographic probability item are presented in Table 1. 
+
+```{r}
+#| echo: false
+
+# table
 high_ortho_summary %>%
   gt() %>%
   tab_header(
@@ -147,7 +180,7 @@ Visual inspection of the boxplot revealed several response times above 15 second
 #### 2. Response Time (RT) when Low_ortho is selected
 
 \
-Descriptive statistics for response time (in seconds) on trials where participants selected the low-orthographic probability item are presented in Table 2.
+For Low_Ortho selections, fewer trials contributed to the response time analysis, with 91 trials from the TD group, 145 from the dyslexia group, and 77 from the compensated group. Participants selected the Low_Ortho option on average 4 to 5 times (TD: M = 4.14, SD = 1.83; Dyslexia: M = 5.18, SD = 1.83; Compensated: M = 4.81, SD = 2.83), with a minimum of 1 and a maximum of 10 selections per participant.
 
 ```{r}
 #| echo: false
@@ -180,6 +213,35 @@ low_ortho_summary <- low_ortho_rt_unique %>%
     .groups = "drop"
   )
 
+# Total trials per group
+low_ortho_rt_unique %>%
+  count(Group, name = "Total_Trials") %>%
+  gt()
+
+# Trials per participant
+low_trials_per_participant <- low_ortho_rt_unique %>%
+  count(participant_id, Group, name = "Trials_Selected_Low_Ortho") 
+
+# Summary by group
+low_trials_per_participant %>%
+  group_by(Group) %>%
+  summarise(
+    Min = min(Trials_Selected_Low_Ortho),
+    Max = max(Trials_Selected_Low_Ortho),
+    Mean = mean(Trials_Selected_Low_Ortho),
+    SD = sd(Trials_Selected_Low_Ortho),
+    .groups = "drop"
+  )%>%
+  gt()
+
+
+
+```
+
+Descriptive statistics for response time (in seconds) on trials where participants selected the low-orthographic probability item are presented in Table 2.
+
+```{r}
+#| echo: false
 # Step 5: Print with gt
 low_ortho_summary %>%
   gt() %>%
@@ -192,8 +254,8 @@ low_ortho_summary %>%
     heading.title.font.size = 14,     # Default is 24
     heading.subtitle.font.size = 12   # Default is 16
   )
-
 ```
+
 
 The typical development (TD) group had a mean response time of 7.32 seconds (SD = 6.29), while the dyslexia and compensated dyslexia groups had means of 7.19 seconds (SD = 3.87) and 5.70 seconds (SD = 2.65), respectively. The TD group also exhibited the widest range of response times, with a maximum of 50.78 seconds.
 
@@ -440,6 +502,63 @@ dwell_time_table %>%
 
 All groups spent the most time viewing the high-orthographic item, but the dyslexia group showed notably longer dwell times for low-orthographic, illegal, and unpronounceable items compared to the other groups. For example, mean dwell time on low-orthographic items was 1.98 seconds for the dyslexia group, versus 1.63 and 1.60 seconds for the TD and compensated groups, respectively. A similar trend was observed for illegal and unpronounceable options. 
 
+#### 7. Ratio of Total Dwell Time on Legal vs. Illegal Options
+
+
+
+```{r}
+## Classify IA as legal and illegal
+dwell_ratio_data <- ortho_data %>%
+  filter(!is.na(OrthoET_IA_dwell_time)) %>%
+  mutate(
+    dwell_time_sec = OrthoET_IA_dwell_time / 1000,
+    Legal_Status = case_when(
+      OrthoET_IA_label %in% c("High_Ortho_IA", "Low_Ortho_IA") ~ "Legal",
+      OrthoET_IA_label %in% c("Illegal_IA", "Unpron_IA") ~ "Illegal",
+      TRUE ~ NA_character_
+    )
+  )
+
+## Computing Ratio
+
+# Sum dwell time by participant × trial × Legal status
+dwell_ratio_trial <- dwell_ratio_data %>%
+  group_by(participant_id, OrthoET_trial_number, Group, Legal_Status) %>%
+  summarise(
+    total_dwell = sum(dwell_time_sec, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = Legal_Status,
+    values_from = total_dwell
+  ) %>%
+  mutate(
+    dwell_ratio_legal_vs_illegal = Legal / Illegal
+  )
+
+## Summarize ratio by group
+
+dwell_ratio_summary <- dwell_ratio_trial %>%
+  mutate(Group = factor(Group, levels = c("TD", "Dyslexia", "Compensated"))) %>%
+  group_by(Group) %>%
+  summarise(
+    Mean_Ratio = mean(dwell_ratio_legal_vs_illegal, na.rm = TRUE),
+    SD = sd(dwell_ratio_legal_vs_illegal, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+## table
+
+dwell_ratio_summary %>%
+  gt() %>%
+  tab_header(
+    title = "Ratio of Dwell Time on Legal vs. Illegal Options",
+    subtitle = "Mean (SD) Dwell Time Ratio by Group"
+  ) %>%
+  fmt_number(columns = everything(), decimals = 2)
+
+
+```
 
 
 

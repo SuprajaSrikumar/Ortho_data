@@ -1,5 +1,5 @@
 ---
-title: "Inclusion Criteria"
+title: "Summary Stats"
 output:
   word_document: default
   html_notebook: default
@@ -211,7 +211,7 @@ ortho_data_cleaned <- ortho_data %>%
 ```
 
 
-```{r eval=FALSE, include=FALSE}
+```{r}
 ## New DataSet
 
 write_csv(ortho_data_cleaned, "2025_04_10_Ortho_data_final.csv")
