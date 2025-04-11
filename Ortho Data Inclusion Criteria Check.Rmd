@@ -199,23 +199,8 @@ participant_diagnostics %>%
 ```
 Since participants c171082 and c194017 did not pass the inclusion criteria, they were removed for further analysis.
 
-## Excluding participants
+## 
 
-```{r}
-excluded_ids <- c("c171082", "c194017")
-
-ortho_data_cleaned <- ortho_data %>%
-  filter(!participant_id %in% excluded_ids) %>%
-  select(-trial_correct, -fixated_all_four)
-
-```
-
-
-```{r}
-## New DataSet
-
-write_csv(ortho_data_cleaned, "2025_04_10_Ortho_data_final.csv")
-```
 
 
 
