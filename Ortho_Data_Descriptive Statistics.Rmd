@@ -1,0 +1,66 @@
+---
+title: "R Notebook"
+output: typst
+---
+
+### Brief Introduction
+
+Orthographic awareness (OA) — the ability to recognize permissible letter patterns in a given writing system—is a foundational component of reading development. In alphabetic languages such as English, OA supports both decoding and word recognition by enabling readers to distinguish between legal and illegal letter sequences. The current study investigates orthographic processing in school-age children (grades 3–6) across three groups: children with dyslexia, children with compensated dyslexia, and children with typical development (TD). By examining how these groups differ in their orthographic decision-making, the study aims to better understand the mechanisms underlying persistent and resolved reading difficulties.
+
+To assess OA, participants completed a visual world eye-tracking task in which they were asked: "Which word looks most like a real English word?" Each trial presented four nonword options that varied in orthographic probability and legality:
+
+- A high-probability (high-ortho) item resembling real English words,
+
+- A low-probability (low-ortho) item with less typical letter sequences,
+
+- An illegal item that violates English orthographic rules,
+
+- An unpronounceable item with no plausible phonological form.
+
+This report investigates group differences across multiple dimensions of task performance, including:
+
+1. Response time when selecting high-ortho and low-ortho items,
+
+2. Accuracy, based on criteria where high-ortho or both high/low-ortho selections are considered correct,
+
+3. Eye movement metrics, such as fixation count, total dwell time, and first-run dwell time on different item types,
+
+4. Orthographic interference ratios, including the relative attention (via dwell time) given to legal vs. illegal options.
+
+Together, these analyses aim to provide a nuanced picture of how children with different reading profiles attend to and process orthographic information during a complex visual decision-making task.
+
+
+### Inclusion Criteria
+
+Participants were included in the analyses if they met both of the following criteria:
+
+Accuracy: Correctly identified at least 67% of trials (≥12/18), using the high/low orthographic items as correct choices.
+
+Visual Engagement: Had at least 12 trials in which they visually inspected all four options (i.e., no fixation count value was zero across the four interest areas).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
