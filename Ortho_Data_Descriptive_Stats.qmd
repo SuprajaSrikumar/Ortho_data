@@ -5,45 +5,44 @@ editor: visual
 ---
 
 ### Brief Introduction
+
 \
 Orthographic awareness (OA) — the ability to recognize and evaluate letter patterns based on the rules and regularities of a writing system —is an important component of reading development. In alphabetic languages such as English, OA supports both decoding and word recognition by enabling readers to distinguish between more and less probable letter sequences. The current study investigates orthographic processing in school-age children (grades 3–6) across three groups: children with dyslexia (n = 28), children with compensated dyslexia (n = 17), and children with typical development (TD, n = 23). By examining how these groups differ in their orthographic decision-making, the study aims to better understand the mechanisms underlying persistent and resolved reading difficulties.
 
 To assess OA, participants completed a visual world eye-tracking task in which they were asked: **"Which word looks most like a real English word?"** Each trial presented four non-word options that varied in orthographic probability and legality:
 
-- A high-probability (high-ortho) item resembling real English words,
+-   A high-probability (high-ortho) item resembling real English words,
 
-- A low-probability (low-ortho) item with less typical letter sequences,
+-   A low-probability (low-ortho) item with less typical letter sequences,
 
-- An illegal item that violates English orthographic rules,
+-   An illegal item that violates English orthographic rules,
 
-- An unpronounceable item with no plausible phonological form.
+-   An unpronounceable item with no plausible phonological form.
 
 Participants completed 18 trials, with option locations and trial order randomized. The task was administered using E-Prime with eye-tracking data collected concurrently.
 
 This report investigates group differences across multiple dimensions of task performance, including:
 
-1. Accuracy, based on criteria where high-ortho or both high/low-ortho selections are considered correct,
+1.  Accuracy, based on criteria where high-ortho or both high/low-ortho selections are considered correct,
 
-2. Response time when selecting high-ortho and low-ortho items,
+2.  Response time when selecting high-ortho and low-ortho items,
 
-3. Eye movement metrics, such as fixation count, proportion of fixations, total dwell time and proportion of dwell time
+3.  Eye movement metrics, such as fixation count, proportion of fixations, total dwell time and proportion of dwell time
 
-4. The relative attention (via dwell time) given to legal vs. illegal options.
-
+4.  The relative attention (via dwell time) given to legal vs. illegal options.
 
 ### Inclusion Criteria for eye tracking data
+
 \
-All participants were included for investigating accuracy of responses across groups. 
+All participants were included for investigating accuracy of responses across groups.
 
 However, the following inclusion criteria was followed for the eye tracking analyses (i.e., for response time, fixations and dwell times):
 
-- Accuracy: Correctly identified at least 67% of trials (≥12/18), using the high/low orthographic items as correct choices.
+-   Accuracy: Correctly identified at least 67% of trials (≥12/18), using the high/low orthographic items as correct choices.
 
-- Visual Engagement: Had at least 12 trials in which they visually inspected all four options (i.e., no fixation count value was zero across the four interest areas).
+-   Visual Engagement: Had at least 12 trials in which they visually inspected all four options (i.e., no fixation count value was zero across the four interest areas).
 
 This inclusion process was implemented to ensure that participants understood the task instructions and attended to all the presented stimuli before making their selection. By applying these filters, the aim was to increase the reliability of the response time and eye-tracking measures used in subsequent analyses.
-
-
 
 ```{r}
 #| include: false
@@ -52,7 +51,6 @@ library(here)
 library(tidyverse)
 library(gt)
 ```
-
 
 ```{r}
 #| include: false
@@ -65,6 +63,7 @@ ortho_data_accuracy <- read_csv(here("Data", "2025_04_10_Ortho_Data_with_groups.
 \
 
 ### Descriptive Statistics
+
 \
 
 #### 1. Overall Response Choices Chosen across Groups
@@ -127,9 +126,10 @@ choice_stats %>%
 
 
 ```
+
 \
 
-On average, participants in all three groups most frequently selected the high-orthographic probability option, with TD children choosing this option on 13.61 of 18 trials (SD = 1.90), children with dyslexia on 12.50 trials (SD = 2.32), and the compensated group on 13.00 trials (SD = 2.85). The low-orthographic option was selected less frequently, while illegal and unpronounceable options were rarely chosen. 
+On average, participants in all three groups most frequently selected the high-orthographic probability option, with TD children choosing this option on 13.61 of 18 trials (SD = 1.90), children with dyslexia on 12.50 trials (SD = 2.32), and the compensated group on 13.00 trials (SD = 2.85). The low-orthographic option was selected less frequently, while illegal and unpronounceable options were rarely chosen.
 
 \
 
@@ -164,8 +164,8 @@ accuracy_high_summary %>%
   fmt_number(columns = everything(), decimals = 2)
 
 ```
-Accuracy was calculated as the proportion of trials (out of 18) on which each participant selected the High_Ortho option. The typical development (TD) group demonstrated the highest mean accuracy (M = 0.76, SD = 0.43), followed by the compensated group (M = 0.72, SD = 0.45) and the dyslexia group (M = 0.69, SD = 0.46). 
-\
+
+Accuracy was calculated as the proportion of trials (out of 18) on which each participant selected the High_Ortho option. The typical development (TD) group demonstrated the highest mean accuracy (M = 0.76, SD = 0.43), followed by the compensated group (M = 0.72, SD = 0.45) and the dyslexia group (M = 0.69, SD = 0.46).\
 
 #### 3. Accuracy Scores by Group when High and Low Ortho were selected
 
@@ -201,15 +201,16 @@ accuracy_highlow_summary %>%
 
 ```
 
-All groups performed near ceiling under this scoring approach. The typical development (TD) group achieved a mean accuracy of 0.99 (SD = 0.08), the dyslexia group had a mean of 0.98 (SD = 0.13), and the compensated group performed at 1.00 (SD = 0.00). 
+All groups performed near ceiling under this scoring approach. The typical development (TD) group achieved a mean accuracy of 0.99 (SD = 0.08), the dyslexia group had a mean of 0.98 (SD = 0.13), and the compensated group performed at 1.00 (SD = 0.00).
 
 \
 
-***
+------------------------------------------------------------------------
 
 \
 
 #### 4. Response Time (RT) when High_ortho is selected
+
 \
 
 For the response time analysis involving trials where participants selected the High_Ortho option, a total of 66 (TD: n = 22, Dyslexia: n = 28, Compensated: n = 16) participant's eye tracking data was included. A total of 302 trials were included from the TD group, 350 from the dyslexia group, and 211 from the compensated group.
@@ -281,10 +282,9 @@ high_trials_per_participant %>%
   )
 ```
 
-
 On average, participants contributed between 12 and 14 trials each (TD: M = 13.73, SD = 1.86; Dyslexia: M = 12.50, SD = 2.32; Compensated: M = 13.19, SD = 2.83), with the number of High_Ortho selections ranging from 7 to 17 trials.
 
-Descriptive statistics for response time (in seconds) on trials where participants selected the high-orthographic probability item are presented in Table 4. 
+Descriptive statistics for response time (in seconds) on trials where participants selected the high-orthographic probability item are presented in Table 4.
 
 ```{r}
 #| echo: false
@@ -388,7 +388,6 @@ high_ortho_summary_wins %>%
 
 After Winsorizing, the mean response time for the TD group was 5.71 seconds (SD = 2.58), for the dyslexia group 6.00 seconds (SD = 2.23), and for the compensated group 5.07 seconds (SD = 2.01). Group medians followed a similar pattern, with the dyslexia group again slightly slower (5.51 seconds) than TD (5.25 seconds) and compensated (4.74 seconds) participants. The Winsorized values suggest that all three groups were comparable in overall response speed when selecting high-orthographic items, though children with dyslexia remained marginally slower on average.
 
-
 \
 
 #### 5. Response Time (RT) when Low_ortho is selected
@@ -440,7 +439,6 @@ low_trials_per_participant <- low_ortho_rt_unique %>%
 
 ```
 
-
 ```{r}
 #| echo: false
 # Summary by group
@@ -456,7 +454,6 @@ low_trials_per_participant %>%
   gt()
 
 ```
-
 
 Descriptive statistics for response time (in seconds) on trials where participants selected the low-orthographic probability item are presented in Table 6.
 
@@ -475,7 +472,6 @@ low_ortho_summary %>%
     heading.subtitle.font.size = 12   # Default is 16
   )
 ```
-
 
 The typical development (TD) group had a mean response time of 7.32 seconds (SD = 6.29), while the dyslexia and compensated dyslexia groups had means of 7.19 seconds (SD = 3.87) and 5.70 seconds (SD = 2.65), respectively. The TD group also exhibited the widest range of response times, with a maximum of 50.78 seconds.
 
@@ -538,13 +534,17 @@ The dyslexia group showed the longest mean response time at 7.07 seconds (SD = 3
 
 \
 
+------------------------------------------------------------------------
+
+\
+
 #### 6. Raw Fixations on each IA type
 
 \
-Eye-tracking data from 66 participants (TD: n = 22, Dyslexia: n = 28, Compensated: n = 15) were included in the fixation analyses.
-Table 8 presents the mean number of fixations on each response option type, collapsed across all trials and participants within each group. Across groups, participants made the greatest number of fixations on the high-orthographic item (TD: M = 3.67, SD = 2.31; Dyslexia: M = 3.38, SD = 1.79; Compensated: M = 3.34, SD = 1.77), followed by the low-orthographic item. Illegal and unpronounceable options consistently received fewer fixations, with means below 2 for all groups. 
+Eye-tracking data from 66 participants (TD: n = 22, Dyslexia: n = 28, Compensated: n = 16) were included in the fixation analyses. Table 8 presents the mean number of fixations on each response option type, collapsed across all trials and participants within each group. Across groups, participants made the greatest number of fixations on the high-orthographic item (TD: M = 3.67, SD = 2.31; Dyslexia: M = 3.38, SD = 1.79; Compensated: M = 3.34, SD = 1.77), followed by the low-orthographic item. Illegal and unpronounceable options consistently received fewer fixations, with means below 2 for all groups.
 
 ```{r}
+#| echo: false
 # Step 1: Recode IA labels and calculate mean/sd
 raw_fixation_summary <- ortho_data %>%
   filter(!is.na(OrthoET_IA_fixation_count)) %>%
@@ -586,15 +586,13 @@ raw_fixation_summary %>%
   )
 ```
 
-
-
 \
 
 #### 7. Proportion of fixations on each IA type
 
 \
 
-Table 9 presents the mean proportion of fixations on each response option, calculated as the percentage of total fixations per trial.
+Table 9 presents the mean proportion of fixations on each response option, calculated as the percentage of total fixations per trial. A total of 366 trials were included from the TD group, 474 from the dyslexia group, and 273 from the compensated group. Participants contributed between 12 and 18 trials each, with average trial counts per participant as follows: TD (M = 16.64, SD = 1.65), Dyslexia (M = 16.93, SD = 1.74), and Compensated (M = 17.06, SD = 1.88).
 
 ```{r}
 #| echo: false
@@ -618,6 +616,29 @@ ortho_percent_fix <- ortho_percent_fix %>%
       "Unpron_IA" = "Unpronounceable"
     )
   )
+### Trial counts: Count trials used in fixation percent analysis
+
+fixation_trials_used <- ortho_data %>%
+  filter(Ortho_ET_IA_inclusion == TRUE) %>%
+  distinct(participant_id, OrthoET_trial_number, Group)
+
+# Trials per group
+fixation_trials_per_group <- fixation_trials_used %>%
+  count(Group, name = "Total_Fixation_Trials")
+
+# Trials per participant summary
+fixation_trials_per_participant <- fixation_trials_used %>%
+  count(participant_id, Group, name = "Fixation_Trials")
+
+fixation_trial_summary_stats <- fixation_trials_per_participant %>%
+  group_by(Group) %>%
+  summarise(
+    Min = min(Fixation_Trials),
+    Max = max(Fixation_Trials),
+    Mean = mean(Fixation_Trials),
+    SD = sd(Fixation_Trials),
+    .groups = "drop"
+  )
 
 ## Summarize percent fixations by group and IA type
 
@@ -634,7 +655,6 @@ fixation_percent_summary <- ortho_percent_fix %>%
   )
 
 ```
-
 
 ```{r}
 #| echo: false
@@ -679,12 +699,15 @@ Across all groups, participants fixated most frequently on the high-orthographic
 
 \
 
+------------------------------------------------------------------------
+
+\
+
 #### 8. Total Dwell Time on each option
 
 \
 
-Eye-tracking data from 66 participants (TD: n = 22, Dyslexia: n = 28, Compensated: n = 15) were included in the fixation analyses.
-Table 10 presents the average dwell time (in seconds) for each response option type.
+Eye-tracking data from 66 participants (TD: n = 22, Dyslexia: n = 28, Compensated: n = 16) were included in the fixation analyses. Table 10 presents the average dwell time (in seconds) for each response option type.
 
 ```{r}
 #| echo: false
@@ -743,7 +766,7 @@ dwell_time_table %>%
 
 ```
 
-All groups spent the most time viewing the high-orthographic item, but the dyslexia group showed notably longer dwell times for low-orthographic, illegal, and unpronounceable items compared to the other groups. For example, mean dwell time on low-orthographic items was 1.98 seconds for the dyslexia group, versus 1.63 and 1.60 seconds for the TD and compensated groups, respectively. A similar trend was observed for illegal and unpronounceable options. 
+All groups spent the most time viewing the high-orthographic item, but the dyslexia group showed notably longer dwell times for low-orthographic, illegal, and unpronounceable items compared to the other groups. For example, mean dwell time on low-orthographic items was 1.98 seconds for the dyslexia group, versus 1.63 and 1.60 seconds for the TD and compensated groups, respectively. A similar trend was observed for illegal and unpronounceable options.
 
 \
 
@@ -751,7 +774,7 @@ All groups spent the most time viewing the high-orthographic item, but the dysle
 
 \
 
-Table 11 presents the mean proportion of total dwell time that participants allocated to each option type across all trials. Participants across all groups spent the greatest proportion of time viewing the high-orthographic item (TD: 47.94%, Dyslexia: 43.18%, Compensated: 43.45%), followed by the low-orthographic item. Illegal and unpronounceable options received comparatively less visual attention, with dwell proportions generally below 15%. The dyslexia and compensated groups spent slightly less time on high-orthographic items and slightly more on low-orthographic and unpronounceable items compared to the TD group, though the overall attentional pattern favoring legal over illegal options was consistent across groups.
+Table 11 presents the mean proportion of total dwell time that participants allocated to each option type across all trials.A total of 366 trials were included from the TD group, 474 from the dyslexia group, and 273 from the compensated group. Participants contributed between 12 and 18 trials each, with the following average trial counts per participant: TD (M = 16.64, SD = 1.65), Dyslexia (M = 16.93, SD = 1.74), and Compensated (M = 17.06, SD = 1.88). Participants across all groups spent the greatest proportion of time viewing the high-orthographic item (TD: 47.94%, Dyslexia: 43.18%, Compensated: 43.45%), followed by the low-orthographic item. Illegal and unpronounceable options received comparatively less visual attention, with dwell proportions generally below 15%. The dyslexia and compensated groups spent slightly less time on high-orthographic items and slightly more on low-orthographic and unpronounceable items compared to the TD group, though the overall attentional pattern favoring legal over illegal options was consistent across groups.
 
 ```{r}
 #| echo: false
@@ -778,6 +801,31 @@ ortho_dwell_prop <- ortho_dwell_prop %>%
     ),
     Group = factor(Group, levels = c("TD", "Dyslexia", "Compensated"))
   )
+
+# Trials used in dwell time analysis
+dwell_trials_used <- ortho_data %>%
+  filter(Ortho_ET_IA_inclusion == TRUE, !is.na(OrthoET_IA_dwell_time)) %>%
+  distinct(participant_id, OrthoET_trial_number, Group)
+
+# Total dwell trials per group
+dwell_trials_per_group <- dwell_trials_used %>%
+  count(Group, name = "Total_Dwell_Trials")
+
+# Trials per participant
+dwell_trials_per_participant <- dwell_trials_used %>%
+  count(participant_id, Group, name = "Dwell_Trials")
+
+# Summary per group
+dwell_trial_summary_stats <- dwell_trials_per_participant %>%
+  group_by(Group) %>%
+  summarise(
+    Min = min(Dwell_Trials),
+    Max = max(Dwell_Trials),
+    Mean = mean(Dwell_Trials),
+    SD = sd(Dwell_Trials),
+    .groups = "drop"
+  )
+
 
 # Step 3: Summarize proportion dwell time by Group × IA type
 dwell_prop_summary <- ortho_dwell_prop %>%
@@ -808,14 +856,22 @@ dwell_prop_summary %>%
 
 ```
 
+\
 
-#### 7. Ratio of Total Dwell Time on Legal vs. Illegal Options
+------------------------------------------------------------------------
 
+\
 
+#### 10. Ratio of Total Dwell Time on Legal vs. Illegal Options
+
+\
+
+Table 12 presents the mean ratio of dwell time on legal versus illegal items, calculated at the trial level.
 
 ```{r}
+#| echo: false
 ## Classify IA as legal and illegal
-dwell_ratio_data <- ortho_data %>%
+ortho_data_ratio <- ortho_data %>%
   filter(!is.na(OrthoET_IA_dwell_time)) %>%
   mutate(
     dwell_time_sec = OrthoET_IA_dwell_time / 1000,
@@ -826,50 +882,62 @@ dwell_ratio_data <- ortho_data %>%
     )
   )
 
-## Computing Ratio
 
-# Sum dwell time by participant × trial × Legal status
-dwell_ratio_trial <- dwell_ratio_data %>%
-  group_by(participant_id, OrthoET_trial_number, Group, Legal_Status) %>%
-  summarise(
-    total_dwell = sum(dwell_time_sec, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
+## Summarize dwell time by participant × trial × Legal status
+dwell_ratio_trial <- ortho_data_ratio %>%
+  group_by(participant_id, OrthoET_trial_number, Legal_Status) %>%
+  summarise(total_dwell = sum(dwell_time_sec, na.rm = TRUE), .groups = "drop") %>%
   pivot_wider(
     names_from = Legal_Status,
-    values_from = total_dwell
+    values_from = total_dwell,
+    values_fill = list(total_dwell = 0)
   ) %>%
-  mutate(
-    dwell_ratio_legal_vs_illegal = Legal / Illegal
+  mutate(OrthoET_dwell_time_ratio = ifelse(Illegal == 0, NA, Legal / Illegal))
+
+## Join variable back to dataset
+
+ortho_data <- ortho_data %>%
+  left_join(
+    dwell_ratio_trial %>%
+      select(participant_id, OrthoET_trial_number, OrthoET_dwell_time_ratio),
+    by = c("participant_id", "OrthoET_trial_number")
   )
 
-## Summarize ratio by group
 
-dwell_ratio_summary <- dwell_ratio_trial %>%
-  mutate(Group = factor(Group, levels = c("TD", "Dyslexia", "Compensated"))) %>%
+```
+
+```{r}
+#| echo: false
+
+## Summarize by group
+ratio_summary <- ortho_data %>%
+  filter(!is.na(OrthoET_dwell_time_ratio)) %>%
   group_by(Group) %>%
   summarise(
-    Mean_Ratio = mean(dwell_ratio_legal_vs_illegal, na.rm = TRUE),
-    SD = sd(dwell_ratio_legal_vs_illegal, na.rm = TRUE),
+    Mean = mean(OrthoET_dwell_time_ratio, na.rm = TRUE),
+    SD = sd(OrthoET_dwell_time_ratio, na.rm = TRUE),
+    Min = min(OrthoET_dwell_time_ratio, na.rm = TRUE),
+    Q1 = quantile(OrthoET_dwell_time_ratio, 0.25, na.rm = TRUE),
+    Median = median(OrthoET_dwell_time_ratio, na.rm = TRUE),
+    Q3 = quantile(OrthoET_dwell_time_ratio, 0.75, na.rm = TRUE),
+    Max = max(OrthoET_dwell_time_ratio, na.rm = TRUE),
     .groups = "drop"
   )
 
 ## table
 
-dwell_ratio_summary %>%
+ratio_summary %>%
   gt() %>%
   tab_header(
-    title = "Ratio of Dwell Time on Legal vs. Illegal Options",
-    subtitle = "Mean (SD) Dwell Time Ratio by Group"
+    title = "Table 12: Ratio of Dwell Time on Legal vs. Illegal Options",
+    subtitle = "By Reading Group (excluding trials with 0 illegal dwell time)"
   ) %>%
-  fmt_number(columns = everything(), decimals = 2)
-
+  fmt_number(columns = everything(), decimals = 2) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
 
 ```
 
-
-
-
-
-
-
+Across all groups, participants spent more time fixating on legal (high- and low-orthographic) items than on illegal or unpronounceable ones. The TD group showed the highest average ratio (M = 4.56, SD = 3.71), followed by the dyslexia group (M = 4.02, SD = 3.07) and the compensated group (M = 3.72, SD = 2.21). Although some participants in the TD and dyslexia groups showed extremely high ratios (e.g., up to 51.37 and 32.34, respectively), median values across groups remained in the 3–4 range, suggesting a consistent pattern of preferential visual attention to legal orthographic forms across groups.
