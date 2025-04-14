@@ -1,0 +1,1108 @@
+---
+title: "Orthographic Processing in School-age Children - Descriptive Statistics Eye Tracking Data"
+format: typst
+editor: visual
+---
+
+### Brief Introduction
+
+\
+Orthographic awareness (OA) — the ability to recognize and evaluate letter patterns based on the rules and regularities of a writing system —is an important component of reading development. In alphabetic languages such as English, OA supports both decoding and word recognition by enabling readers to distinguish between more and less probable letter sequences. The current study investigates orthographic processing in school-age children (grades 3–6) across three groups: children with dyslexia (n = 28), children with compensated dyslexia (n = 17), and children with typical development (TD, n = 23). By examining how these groups differ in their orthographic decision-making, the study aims to better understand the mechanisms underlying persistent and resolved reading difficulties.
+
+To assess OA, participants completed a visual world eye-tracking task in which they were asked: **"Which word looks most like a real English word?"** Each trial presented four non-word options that varied in orthographic probability and legality:
+
+-   A high-probability (high-ortho) item resembling real English words,
+
+-   A low-probability (low-ortho) item with less typical letter sequences,
+
+-   An illegal item that violates English orthographic rules,
+
+-   An unpronounceable item with no plausible phonological form.
+
+Participants completed 18 trials, with option locations and trial order randomized. The task was administered using E-Prime with eye-tracking data collected concurrently.
+
+This report investigates group differences across multiple dimensions of task performance, including:
+
+1.  Accuracy, based on criteria where high-ortho or both high/low-ortho selections are considered correct,
+
+2.  Response time when selecting high-ortho and low-ortho items,
+
+3.  Eye movement metrics, such as fixation count, proportion of fixations, total dwell time and proportion of dwell time
+
+4.  The relative attention (via dwell time) given to legal vs. illegal options.
+
+
+```{r}
+#| include: false
+## Loading Libraries
+library(here)
+library(tidyverse)
+library(gt)
+```
+
+```{r}
+#| include: false
+## Loading File
+
+ortho_data <- read_csv(here("Data", "2025_04_10_Ortho_Data_final.csv"))
+ortho_data_accuracy <- read_csv(here("Data", "2025_04_10_Ortho_Data_with_groups.csv"))
+```
+
+
+### Descriptive Statistics
+
+\
+
+#### 1. Overall Response Choices Chosen across Groups
+
+\
+
+Table 1 and Figure 1 display the raw distribution of response choices across groups. All participants met the task accuracy inclusion criterion. The final sample included 23 children with typical development (TD), 28 with dyslexia, and 17 with compensated dyslexia.
+
+```{r}
+#| echo: false
+library(dplyr)
+library(tidyr)
+library(glue)
+library(gt)
+
+# Set group levels for consistent ordering
+ortho_data_accuracy <- ortho_data_accuracy %>%
+  mutate(Group = factor(Group, levels = c("TD", "Dyslexia", "Compensated")))
+
+# Step 1: Prepare participant-level counts per response choice
+choice_summary <- ortho_data_accuracy %>%
+  filter(!is.na(OrthoET_response_choice)) %>%
+  distinct(participant_id, OrthoET_trial_number, .keep_all = TRUE) %>%
+  mutate(
+    OrthoET_response_choice = recode(
+      OrthoET_response_choice,
+      "High_Ortho" = "High",
+      "Low_Ortho" = "Low",
+      "Illegal_Ortho" = "Illegal",
+      "Unpron_Ortho" = "Unpron"
+    )
+  ) %>%
+  group_by(participant_id, Group, OrthoET_response_choice) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  pivot_wider(
+    names_from = OrthoET_response_choice,
+    values_from = n,
+    values_fill = list(n = 0)
+  )
+
+# Step 2: Compute group-level descriptive stats (Mean (SD))
+choice_stats <- choice_summary %>%
+  group_by(Group) %>%
+  summarise(
+    High = glue("{round(mean(High), 2)} ({round(sd(High), 2)})"),
+    Low = glue("{round(mean(Low), 2)} ({round(sd(Low), 2)})"),
+    Illegal = glue("{round(mean(Illegal), 2)} ({round(sd(Illegal), 2)})"),
+    Unpron = glue("{round(mean(Unpron), 2)} ({round(sd(Unpron), 2)})"),
+    .groups = "drop"
+  )
+
+# Step 3: Format and display table
+choice_stats %>%
+  gt() %>%
+  cols_label(
+    Group = "Group",
+    High = "High Orthographic",
+    Low = "Low Orthographic",
+    Illegal = "Illegal",
+    Unpron = "Unpronounceable"
+  ) %>%
+  tab_header(
+    title = "Table 1: Distribution of Response Choices by Group",
+    subtitle = "Mean (SD) Number of Trials per Response Type (out of 18)"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+
+```
+
+```{r}
+#| echo: false
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Step 1: Reshape to long format
+choice_long <- choice_summary %>%
+  pivot_longer(cols = c(High, Low, Illegal, Unpron),
+               names_to = "Response_Type",
+               values_to = "Trial_Count") %>%
+  mutate(
+    Response_Type = factor(Response_Type, levels = c("High", "Low", "Illegal", "Unpron"))
+  )
+
+# Step 2: Compute mean and SD for each group/response type
+choice_plot_summary <- choice_long %>%
+  group_by(Group, Response_Type) %>%
+  summarise(
+    mean_count = mean(Trial_Count),
+    sd_count = sd(Trial_Count),
+    .groups = "drop"
+  )
+
+# Step 3: Plot with error bars
+ggplot(choice_plot_summary, aes(x = Response_Type, y = mean_count, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge(0.9), width = 0.7) +
+  geom_errorbar(aes(ymin = mean_count - sd_count, ymax = mean_count + sd_count),
+                width = 0.2,
+                position = position_dodge(0.9)) +
+  labs(
+    title = "Figure 1: Average Number of Trials Each Response Type Was Chosen, by Group",
+    x = "Response Type",
+    y = "Mean Number of Trials (± SD, Max = 18)"
+  ) +
+  theme_minimal(base_size = 12) +
+  scale_fill_brewer(palette = "Set2")
+
+```
+
+On average, participants in all three groups most frequently selected the high-orthographic probability option, with TD children choosing this option on 13.61 of 18 trials (SD = 1.90), children with dyslexia on 12.50 trials (SD = 2.32), and the compensated group on 13.00 trials (SD = 2.85). The low-orthographic option was selected less frequently, while illegal and unpronounceable options were rarely chosen.
+
+```{r}
+#| include: false
+# Filter the long-format data to only High and Low responses
+choice_highlow <- choice_summary %>%
+  select(participant_id, Group, High, Low) %>%
+  pivot_longer(cols = c(High, Low),
+               names_to = "Response_Type",
+               values_to = "Trial_Count") %>%
+  mutate(
+    Group = factor(Group, levels = c("TD", "Dyslexia", "Compensated")),
+    Response_Type = factor(Response_Type, levels = c("High", "Low"))
+  )
+## 2 way ANOVA
+
+anova_highlow <- aov(Trial_Count ~ Group * Response_Type, data = choice_highlow)
+summary(anova_highlow)
+
+
+
+```
+
+```{r}
+#| echo: false
+library(broom)
+library(gt)
+
+# Tidy up ANOVA result
+anova_clean <- tidy(anova_highlow) %>%
+  mutate(
+    term = recode(term,
+                  "Group" = "Group",
+                  "Response_Type" = "Response Type",
+                  "Group:Response_Type" = "Group × Response Type",
+                  "Residuals" = "Residuals"),
+    statistic = round(statistic, 2),
+    p.value = ifelse(p.value < .001, "< .001", round(p.value, 2)),
+    df = round(df, 0)
+  ) %>%
+  select(
+    Effect = term,
+    `df` = df,
+    `Sum Sq` = sumsq,
+    `Mean Sq` = meansq,
+    `F` = statistic,
+    `p` = p.value
+  )
+
+# Display table
+anova_clean %>%
+  gt() %>%
+  tab_header(
+    title = "Table 2: Two-Way ANOVA Results for High vs. Low Responses",
+    subtitle = "Dependent Variable: Number of Trials per Response Type (Max = 18)"
+  ) %>%
+  fmt_number(columns = c(`Sum Sq`, `Mean Sq`), decimals = 2) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+```
+
+Although participants had four response options (High, Low, Illegal, and Unpronounceable), the "Illegal" and "Unpronounceable" options were rarely selected across all groups. Hence, a two-way ANOVA was conducted including only the High and Low orthographic responses. The two-way ANOVA revealed a significant main effect of response type, $F(1, 130) = 452.51$, $p < .001$, indicating a clear preference for high probability orthographic words over low probability orthographic word options across groups. 
+There was no significant main effect of group, $F(2, 130) = 0.06$, $p = .94$.  
+The interaction between group and response type was not significant, $F(2, 130) = 2.62$, $p = .08$, though this trend suggests potential group differences in response patterns that may warrant further investigation.
+
+---
+
+#### Inclusion Criteria for Eye Tracking Analyses
+
+The following participant-level inclusion criteria were applied to ensure reliability in all eye-tracking analyses (response time, fixation count, dwell time):
+
+- **Task Accuracy**: Participants were required to correctly identify at least 67% of trials (≥12 out of 18), where both high and low orthographic responses were considered correct.
+
+- **Visual Engagement**: Participants needed to have at least 12 trials in which they visually fixated on all four response options (i.e., no fixation count of zero across any of the four interest areas).
+
+This initial inclusion ensured that participants understood the task and were visually engaged with the stimuli.
+
+
+#### Additional Inclusion for Specific Analyses
+
+For analyses focused on **response time** and **eye movement measures** based on “High-ortho” response selections, the following **additional criteria** were applied:
+
+- **Participant Inclusion**: Participants were required to have **at least 10 trials** in which they selected the **“High”** orthographic response.
+
+- **Trial Inclusion**: Only trials in which the participant selected the **“High”** option were retained for analysis.
+
+These additional filters ensured that group comparisons were based on a sufficient number of consistent “High” responses per participant, enabling more stable and interpretable estimates of response time and eye-tracking metrics.
+
+A total of 66 participants met the initial eye-tracking inclusion criteria (TD: *n* = 22, Dyslexia: *n* = 28, Compensated: *n* = 16). Further, based on the additional criteria, a final sample of 58 participants (TD: *n* = 22, Dyslexia: *n* = 22, Compensated: *n* = 14) were included.
+
+Only trials where “High_Ortho” was selected were part of the analyses. Each participant contributed between 10 and 17 trials, resulting in a total of 751 trials (TD = 283, Dyslexia = 281, Compensated = 187). Table 2 presents the five-number summary of included trials per participant by group.
+
+
+```{r}
+#| include: false
+# Step 1: Apply first-level inclusion
+ortho_included <- ortho_data %>%
+  filter(Ortho_ET_met_both_inclusion == 1)
+
+# Step 2: Filter to "High" response trials only, and keep the IA row that was selected
+high_trials <- ortho_included %>%
+  filter(OrthoET_response_choice == "High_Ortho" & OrthoET_IA_label == "High_Ortho_IA") %>%
+  distinct(participant_id, OrthoET_trial_number, .keep_all = TRUE)
+
+# Step 3: Count number of "High" trials per participant (now unique per trial)
+high_trial_counts <- high_trials %>%
+  group_by(participant_id, Group) %>%
+  summarise(n_high_trials = n(), .groups = "drop")
+
+# Step 4: Keep only participants with ≥10 "High" trials
+eligible_participants <- high_trial_counts %>%
+  filter(n_high_trials >= 10)
+
+# Step 5: Filter the actual data to those participants
+high_rt_data <- high_trials %>%
+  filter(participant_id %in% eligible_participants$participant_id)
+
+# Step 6: Recreate trials_per_participant from this filtered dataset
+trials_per_participant <- high_rt_data %>%
+  group_by(Group, participant_id) %>%
+  summarise(n_trials = n(), .groups = "drop")
+
+# Step 7: Report correct trial counts
+summary_by_group <- trials_per_participant %>%
+  group_by(Group) %>%
+  summarise(
+    Min = min(n_trials),
+    Q1 = quantile(n_trials, 0.25),
+    Median = median(n_trials),
+    Q3 = quantile(n_trials, 0.75),
+    Max = max(n_trials),
+    Mean = round(mean(n_trials), 2),
+    .groups = "drop"
+  )
+
+```
+
+```{r}
+#| echo: false
+summary_by_group %>%
+  select(Group, Min, Q1, Median, Q3, Max, Mean) %>%
+  gt() %>%
+  tab_header(
+    title = "Table 2: High-Ortho Trials per Participant",
+    subtitle = "Five-number summary of included trials per participant by group"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    Min = "Min",
+    Q1 = "Q1",
+    Median = "Median",
+    Q3 = "Q3",
+    Max = "Max",
+    Mean = "Mean"
+  ) %>%
+  fmt_number(columns = c(Min, Q1, Median, Q3, Max, Mean), decimals = 2) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+```
+
+
+\
+
+#### 2. Response time (RT) when High_ortho is selected
+
+\
+
+Response times were analyzed for trials in which participants selected the “High” probability orthographic non-word. Descriptive statistics by group are presented in Table 3. 
+
+```{r}
+#| include: false
+# Total number of trials per group
+high_rt_data %>%
+  group_by(Group) %>%
+  summarise(total_trials = n())
+```
+
+
+```{r}
+#| echo: false
+library(dplyr)
+library(gt)
+
+# Set desired group order
+high_rt_data <- high_rt_data %>%
+  mutate(Group = factor(Group, levels = c("TD", "Compensated", "Dyslexia")))
+
+# Descriptive statistics of response time (converted to seconds)
+rt_summary_seconds <- high_rt_data %>%
+  mutate(RT_sec = OrthoET_response_time / 1000) %>%
+  group_by(Group) %>%
+  summarise(
+     Mean = round(mean(RT_sec, na.rm = TRUE), 2),
+    SD = round(sd(RT_sec, na.rm = TRUE), 2),
+    Min = round(min(RT_sec, na.rm = TRUE), 2),
+    Q1 = round(quantile(RT_sec, 0.25, na.rm = TRUE), 2),
+    Median = round(median(RT_sec, na.rm = TRUE), 2),
+    Q3 = round(quantile(RT_sec, 0.75, na.rm = TRUE), 2),
+    Max = round(max(RT_sec, na.rm = TRUE), 2),
+    .groups = "drop"
+  )
+
+# Display as a gt table
+rt_summary_seconds %>%
+  gt() %>%
+  tab_header(
+    title = "Table 3: Descriptive Statistics for Response Time by Group",
+    subtitle = "All values in seconds for trials where the High ortho option was selected"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    Mean = "Mean",
+    SD = "SD",
+    Min = "Min",
+    Q1 = "Q1",
+    Median = "Median",
+    Q3 = "Q3",
+    Max = "Max"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+```
+
+Response times were converted from milliseconds to seconds. On average, the Compensated group responded slightly faster (M = 5.41 s, SD = 2.61) than both the Dyslexia (M = 6.16 s, SD = 2.36) and TD (M = 6.03 s, SD = 3.14) groups. Median response times followed a similar pattern, with the Compensated group showing the shortest median latency (4.84 s), compared to Dyslexia (5.60 s) and TD (5.30 s).
+
+A visual inspection of the raw response time data (Figure 2) revealed a small number of unusually long trials (e.g., exceeding 20 seconds), which could reflect momentary task disengagement or other non-task-related factors.
+
+```{r}
+#| echo: false
+library(ggplot2)
+
+ggplot(high_rt_data %>% mutate(RT_sec = OrthoET_response_time / 1000),
+       aes(x = Group, y = RT_sec)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.2, alpha = 0.5, size = 1, color = "darkblue") +
+  labs(
+    title = "Figure 2: Raw Response Times for High-Orthographic Trials",
+    x = "Group",
+    y = "Response Time (seconds)"
+  ) +
+  theme_minimal(base_size = 12)
+
+```
+
+
+To reduce the influence of outlier trials, response times were Winsorized at the trial level using the 2.5th and 97.5th percentile thresholds. Each participant’s mean response time was then computed from their Winsorized trial-level data. These participant-level means were summarized by group (Table 4). The Compensated group again showed the fastest average response (M = 5.38 s, SD = 1.60), followed by the TD group (M = 5.88 s, SD = 1.84) and the Dyslexia group (M = 6.17 s, SD = 0.94). The distributions of Winsorized trial-level response times are shown in Figure 3.
+
+
+
+```{r}
+#| include: false
+library(dplyr)
+
+# Add RT in seconds
+high_rt_data <- high_rt_data %>%
+  mutate(RT_sec = OrthoET_response_time / 1000)
+
+# Compute 2.5% and 97.5% percentiles
+quantiles <- quantile(high_rt_data$RT_sec, probs = c(0.025, 0.975), na.rm = TRUE)
+
+# Winsorize: cap values outside these bounds
+high_rt_data_winsor <- high_rt_data %>%
+  mutate(
+    RT_sec_winsor = case_when(
+      RT_sec < quantiles[1] ~ quantiles[1],
+      RT_sec > quantiles[2] ~ quantiles[2],
+      TRUE ~ RT_sec
+    )
+  )
+
+```
+
+
+```{r}
+#| echo: false
+## PArticipant means after winzorizing
+participant_means <- high_rt_data_winsor %>%
+  group_by(participant_id, Group) %>%
+  summarise(mean_RT_sec = mean(RT_sec_winsor, na.rm = TRUE), .groups = "drop")
+
+## summary
+
+participant_summary <- participant_means %>%
+  group_by(Group) %>%
+  summarise(
+     n = n(),
+    Mean = round(mean(mean_RT_sec), 2),
+    SD = round(sd(mean_RT_sec), 2),
+    Min = round(min(mean_RT_sec), 2),
+    Q1 = round(quantile(mean_RT_sec, 0.25), 2),
+    Median = round(median(mean_RT_sec), 2),
+    Q3 = round(quantile(mean_RT_sec, 0.75), 2),
+    Max = round(max(mean_RT_sec), 2),
+    .groups = "drop"
+  )
+## table
+
+library(gt)
+
+participant_summary %>%
+  gt() %>%
+  tab_header(
+    title = "Table 4: Winsorized Participant-Level Response Time Summary",
+    subtitle = "Each participant's mean RT calculated after trial-level winsorization (in seconds)"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    Min = "Min",
+    Q1 = "Q1",
+    Median = "Median",
+    Q3 = "Q3",
+    Max = "Max",
+    Mean = "Mean",
+    SD = "SD",
+    n = "n"
+  )
+
+
+```
+
+
+```{r}
+#| echo: false
+## Winzorized data display
+ggplot(high_rt_data_winsor, aes(x = Group, y = RT_sec_winsor)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.2, alpha = 0.5, size = 1, color = "darkblue") +
+  labs(
+    title = "Figure 3: Winsorized Response Times for High-Orthographic Trials",
+    x = "Group",
+    y = "Response Time (seconds, Winsorized)"
+  ) +
+  theme_minimal()
+
+```
+
+\
+
+#### 3. Eye Tracking Analyses - Fixation Count
+
+\
+
+Table 5 and Figure 4 enumerate the mean (SD) number of fixations per response option type by group.
+
+
+
+```{r}
+#| echo: false
+library(dplyr)
+library(glue)
+library(tidyr)
+library(gt)
+
+# Step 1: Filter for first-level inclusion
+ortho_included <- ortho_data %>%
+  filter(Ortho_ET_met_both_inclusion == 1)
+
+# Step 2: Keep trials where participant selected "High_Ortho"
+high_selected_trials <- ortho_included %>%
+  filter(OrthoET_response_choice == "High_Ortho")
+
+# Step 3: Identify participants with ≥10 such trials
+eligible_fixation_participants <- high_selected_trials %>%
+  distinct(participant_id, OrthoET_trial_number) %>%
+  count(participant_id) %>%
+  filter(n >= 10) %>%
+  pull(participant_id)
+
+# Step 4: Filter to trials from eligible participants
+fixation_data_filtered <- high_selected_trials %>%
+  filter(participant_id %in% eligible_fixation_participants)
+
+# Step 5: Summarize fixation counts per Group × IA Label
+fixation_summary <- fixation_data_filtered %>%
+  group_by(Group, OrthoET_IA_label) %>%
+  summarise(
+    mean_fixation_count = round(mean(OrthoET_IA_fixation_count, na.rm = TRUE), 2),
+    sd_fixation_count = round(sd(OrthoET_IA_fixation_count, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(mean_sd = glue("{mean_fixation_count} ({sd_fixation_count})"))
+
+# Step 6: Reshape to wide format for final table
+fixation_summary_wide <- fixation_summary %>%
+  select(Group, OrthoET_IA_label, mean_sd) %>%
+  pivot_wider(names_from = OrthoET_IA_label, values_from = mean_sd)
+
+# Step 7: Display table using gt
+fixation_summary_wide %>%
+  gt() %>%
+  tab_header(
+    title = "Table 5: Number of Fixations on Each Option Type",
+    subtitle = "Mean (SD) Fixation Count by Group and Item Type"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    High_Ortho_IA = "High Ortho",
+    Low_Ortho_IA = "Low Ortho",
+    Illegal_IA = "Illegal Ortho",
+    Unpron_IA = "Unpronounceable Ortho"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+
+```
+
+```{r}
+#| include: false
+##no of participants per group
+fixation_data_filtered %>%
+  distinct(participant_id, Group) %>%
+  count(Group, name = "n_participants")
+
+## trials per participant
+trials_per_participant_fix <- fixation_data_filtered %>%
+  distinct(participant_id, Group, OrthoET_trial_number) %>%
+  count(Group, name = "n_trials_total")
+
+##total trials
+
+sum(trials_per_participant_fix$n_trials_total)
+
+```
+
+On average, participants fixated more on the High probability orthography option than on the Low, Illegal, or Unpronounceable options across all groups. The TD group showed the highest mean fixations on High probability orthographic items (M = 3.81, SD = 1.87), followed closely by the Dyslexia (M = 3.70, SD = 1.73) and Compensated (M = 3.63, SD = 1.77) groups.
+
+```{r}
+#| echo: false
+ggplot(fixation_summary, aes(x = OrthoET_IA_label, y = mean_fixation_count, fill = Group)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  geom_errorbar(aes(ymin = mean_fixation_count - sd_fixation_count,
+                    ymax = mean_fixation_count + sd_fixation_count),
+                width = 0.2,
+                position = position_dodge(width = 0.9)) +
+  labs(
+    title = "Figure 4: Mean Number of Fixations by Response Option Type",
+    x = "Response Option Type",
+    y = "Fixation Count"
+  ) +
+  theme_minimal()
+
+```
+
+\
+
+#### 4. Eye Tracking Analyses - Fixation percentage
+
+\
+
+Table 6 and Figure 5 display the proportion of fixations allocated to each response option type, averaged across all included trials and participants within each group. This analysis was limited to trials in which participants selected the “High” probability orthographic nonword and met the inclusion criterion of at least 10 such trials (TD: *n* = 22, Dyslexia: *n* = 22, Compensated: *n* = 14).
+
+Participants in all three groups spent a similar proportion of their total fixations on the High orthographic item (M = 0.31 for all groups), suggesting consistent attention to the selected target. Fixations were distributed similarly across the other options, with the Low orthographic item receiving more fixations (M = 0.22–0.23) than the Illegal (M = 0.17) or Unpronounceable (M = 0.15–0.16) options. 
+
+
+```{r}
+#| echo: false
+library(dplyr)
+library(glue)
+library(tidyr)
+library(gt)
+
+# Step 1: Use the same participant + trial filter logic
+ortho_included <- ortho_data %>%
+  filter(Ortho_ET_met_both_inclusion == 1)
+
+high_selected_trials <- ortho_included %>%
+  filter(OrthoET_response_choice == "High_Ortho")
+
+eligible_percent_fixation_participants <- high_selected_trials %>%
+  distinct(participant_id, OrthoET_trial_number) %>%
+  count(participant_id) %>%
+  filter(n >= 10) %>%
+  pull(participant_id)
+
+# Step 2: Filter to eligible participants
+percent_fixation_data_filtered <- high_selected_trials %>%
+  filter(participant_id %in% eligible_percent_fixation_participants)
+
+# Step 3: Summarize % fixation per Group × IA
+percent_fixation_summary <- percent_fixation_data_filtered %>%
+  group_by(Group, OrthoET_IA_label) %>%
+  summarise(
+    mean_percent_fix = round(mean(`OrthoET_IA_fixation_%`, na.rm = TRUE), 2),
+    sd_percent_fix = round(sd(`OrthoET_IA_fixation_%`, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(mean_sd = glue::glue("{mean_percent_fix} ({sd_percent_fix})"))
+
+# Step 4: Pivot to wide format
+percent_fixation_wide <- percent_fixation_summary %>%
+  select(Group, OrthoET_IA_label, mean_sd) %>%
+  pivot_wider(names_from = OrthoET_IA_label, values_from = mean_sd)
+
+# Step 5: Display using gt
+percent_fixation_wide %>%
+  gt() %>%
+  tab_header(
+    title = "Table 6: Proportion of Fixations on Each Option Type",
+    subtitle = "Mean (SD) Percentage of Total Fixations by Group and Item Type"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    High_Ortho_IA = "High Ortho",
+    Low_Ortho_IA = "Low Ortho",
+    Illegal_IA = "Illegal Ortho",
+    Unpron_IA = "Unpronounceable Ortho"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+```
+
+```{r}
+#| echo: false
+# Make sure you compute mean % fixation per IA, and normalize within group
+
+ggplot(percent_fixation_summary, aes(x = Group, y = mean_percent_fix, fill = OrthoET_IA_label)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Figure 5: Proportion of Fixations Across Response Option Types",
+    x = "Group",
+    y = "Proportion of Total Fixations",
+    fill = "Option Type"
+  ) +
+  theme_minimal()
+
+```
+
+\
+
+#### 5. Eye Tracking Analyses - Dwell Time
+
+\
+
+Table 7 shows the mean (SD) dwell time in seconds for each response option type, averaged across all trials and participants within each group. On average, participants spent the most time fixating on the High probability orthographic item (M = 2.31–2.69 seconds), followed by the Low probability orthographic option (M = 1.25–1.53 seconds). Dwell time on the Illegal and Unpronounceable options was considerably shorter across all groups, ranging from 0.54 to 0.72 seconds. This pattern mirrors the fixation count results and suggests that participants not only fixated more often on orthographically plausible options, but also dwelled longer on them.
+
+
+```{r}
+#| echo: false
+library(dplyr)
+library(tidyr)
+library(glue)
+library(gt)
+
+# Step 1: Inclusion filters
+ortho_included <- ortho_data %>%
+  filter(Ortho_ET_met_both_inclusion == 1)
+
+high_selected_trials <- ortho_included %>%
+  filter(OrthoET_response_choice == "High_Ortho")
+
+eligible_dwell_participants <- high_selected_trials %>%
+  distinct(participant_id, OrthoET_trial_number) %>%
+  count(participant_id) %>%
+  filter(n >= 10) %>%
+  pull(participant_id)
+
+# Step 2: Filter and convert dwell time to seconds
+dwell_data_filtered <- high_selected_trials %>%
+  filter(participant_id %in% eligible_dwell_participants) %>%
+  mutate(dwell_sec = OrthoET_IA_dwell_time / 1000)
+
+# Step 3: Summarize dwell time per Group × IA (in seconds)
+dwell_summary <- dwell_data_filtered %>%
+  group_by(Group, OrthoET_IA_label) %>%
+  summarise(
+    mean_dwell = round(mean(dwell_sec, na.rm = TRUE), 2),
+    sd_dwell = round(sd(dwell_sec, na.rm = TRUE), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(mean_sd = glue("{mean_dwell} ({sd_dwell})"))
+
+# Step 4: Pivot and display
+dwell_summary_wide <- dwell_summary %>%
+  select(Group, OrthoET_IA_label, mean_sd) %>%
+  pivot_wider(names_from = OrthoET_IA_label, values_from = mean_sd)
+
+# Step 5: Display table
+dwell_summary_wide %>%
+  gt() %>%
+  tab_header(
+    title = "Table 7: Dwell Time on Each Option Type",
+    subtitle = "Mean (SD) Dwell Time in ms by Group and Item Type"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    High_Ortho_IA = "High Ortho",
+    Low_Ortho_IA = "Low Ortho",
+    Illegal_IA = "Illegal Ortho",
+    Unpron_IA = "Unpronounceable Ortho"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+```
+
+```{r}
+#| include: false
+## Participants per group
+dwell_data_filtered %>%
+  distinct(participant_id, Group) %>%
+  count(Group, name = "n_participants")
+
+## Trials per participant
+trials_per_participant_dwell <- dwell_data_filtered %>%
+  distinct(participant_id, OrthoET_trial_number, Group) %>%
+  count(Group, name = "n_trials_total")
+
+
+```
+
+
+Figure 6 displays the distribution of trial-level dwell times (in seconds) for each response option type, separated by group. Each violin plot represents the density of dwell durations for the High, Low, Illegal, and Unpronounceable orthographic nonwords.
+
+Across all groups, dwell times were longest on the High probability orthographic items, followed by Low probability orthographic items. Illegal and Unpronounceable options consistently received shorter dwell times. The distribution of dwell times was relatively symmetric and centered around 2–3 seconds for High orthographic items, though a small number of trials extended beyond 7–8 seconds. 
+
+Overall, the dwell time distributions align well with the fixation count and percentage patterns, suggesting participants spent more time visually attending to orthographically plausible items regardless of whether they were selected or not.
+
+
+```{r}
+#| echo: false
+library(ggplot2)
+
+# Convert dwell time to seconds
+dwell_data_filtered <- dwell_data_filtered %>%
+  mutate(dwell_sec = OrthoET_IA_dwell_time / 1000)
+
+# Violin + boxplot overlay for distribution
+ggplot(dwell_data_filtered, aes(x = OrthoET_IA_label, y = dwell_sec, fill = Group)) +
+  geom_violin(position = position_dodge(0.9), alpha = 0.6, trim = TRUE) +
+  geom_boxplot(width = 0.1, position = position_dodge(0.9), outlier.shape = NA) +
+  labs(
+    title = "Figure 6: Trial-Level Dwell Time by Response Option Type",
+    subtitle = "Each dot represents a trial; dwell time shown in seconds",
+    x = "Response Option Type",
+    y = "Dwell Time (seconds)"
+  ) +
+  theme_minimal(base_size = 12)
+
+```
+
+```{r}
+#| include: false
+# Compute 2.5th and 97.5th percentile bounds
+dwell_bounds <- quantile(dwell_data_filtered$dwell_sec, probs = c(0.025, 0.975), na.rm = TRUE)
+
+# Apply Winsorization
+dwell_data_winsorized <- dwell_data_filtered %>%
+  mutate(
+    dwell_sec_winsor = case_when(
+      dwell_sec < dwell_bounds[1] ~ dwell_bounds[1],
+      dwell_sec > dwell_bounds[2] ~ dwell_bounds[2],
+      TRUE ~ dwell_sec
+    )
+  )
+
+```
+
+To mitigate the influence of outlier trials, dwell time data were Winsorized at the 2.5th and 97.5th percentiles at the trial level. Each participant’s mean dwell time was then calculated separately for each response option type. These values were summarized by group and are presented in Table 8.
+
+Participants in all groups exhibited the longest dwell times on the High probability orthographic options. 
+
+Figure 7 displays the distribution of Winsorized dwell times at the trial level for each response option. The same pattern was observed: participants dwelled longer on orthographically plausible items, particularly the High and Low options, with relatively short durations on the Illegal and Unpronounceable alternatives. The distributions also appear more compact after Winsorization, with fewer extreme values and more consistent ranges across groups.
+
+
+```{r}
+#| echo: false
+library(ggplot2)
+
+ggplot(dwell_data_winsorized, aes(x = OrthoET_IA_label, y = dwell_sec_winsor, fill = Group)) +
+  geom_violin(position = position_dodge(0.9), alpha = 0.6, trim = TRUE) +
+  geom_boxplot(width = 0.1, position = position_dodge(0.9), outlier.shape = NA) +
+  labs(
+    title = "Figure 7: Winsorized Trial-Level Dwell Time by Response Option Type",
+    subtitle = "Dwell time winsorized at 2.5th and 97.5th percentiles (in seconds)",
+    x = "Response Option Type",
+    y = "Dwell Time (seconds, Winsorized)"
+  ) +
+  theme_minimal(base_size = 12)
+
+```
+
+```{r}
+#| echo: false
+library(dplyr)
+library(gt)
+library(tidyr)
+library(glue)
+
+# Step 1: Participant-level means (winsorized dwell time per IA)
+participant_means_dwell <- dwell_data_winsorized %>%
+  group_by(participant_id, Group, OrthoET_IA_label) %>%
+  summarise(mean_dwell_winsor = mean(dwell_sec_winsor, na.rm = TRUE), .groups = "drop")
+
+# Step 2: Summary stats across participants per Group × IA
+dwell_summary_participant <- participant_means_dwell %>%
+  group_by(Group, OrthoET_IA_label) %>%
+  summarise(
+    n = n(),
+    Mean = round(mean(mean_dwell_winsor), 2),
+    SD = round(sd(mean_dwell_winsor), 2),
+    Min = round(min(mean_dwell_winsor), 2),
+    Q1 = round(quantile(mean_dwell_winsor, 0.25), 2),
+    Median = round(median(mean_dwell_winsor), 2),
+    Q3 = round(quantile(mean_dwell_winsor, 0.75), 2),
+    Max = round(max(mean_dwell_winsor), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(Mean_SD = glue("{Mean} ({SD})"))
+
+# Step 3: Pivot wide
+dwell_summary_participant_wide <- dwell_summary_participant %>%
+  select(Group, OrthoET_IA_label, Mean_SD) %>%
+  pivot_wider(names_from = OrthoET_IA_label, values_from = Mean_SD)
+
+# Step 4: Display as gt table
+dwell_summary_participant_wide %>%
+  gt() %>%
+  tab_header(
+    title = "Table 8: Winsorized Participant-Level Dwell Time Summary",
+    subtitle = "Each participant's mean dwell time (in seconds) after trial-level winsorization"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    High_Ortho_IA = "High Ortho",
+    Low_Ortho_IA = "Low Ortho",
+    Illegal_IA = "Illegal Ortho",
+    Unpron_IA = "Unpronounceable Ortho"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+```
+
+\
+
+#### 6: Eye Tracking Analyses - First Run Dwell Time
+
+\
+
+Table 9 displays the average first-run dwell time (in seconds) for each response option type, based on participant-level means. First-run dwell time reflects the amount of time participants spent looking at an item during their first pass before moving their gaze elsewhere.
+
+Participants consistently dwelled the longest on the High probability orthographic options. Dwell times on the Low probability orthographic items were slightly shorter (ranging from 0.56 to 0.63 seconds), and the shortest dwell durations were observed for Illegal and Unpronounceable items across all groups.
+
+Figure 8 shows the distribution of trial-level first-run dwell times. Although most data fall within a narrow range, a small number of longer trials (>2.5 seconds) are evident, especially for the High and Low options. 
+
+
+```{r}
+#| echo: false
+library(dplyr)
+library(gt)
+library(glue)
+library(tidyr)
+
+# Step 1: Convert first-run dwell time to seconds
+first_run_dwell_data <- dwell_data_filtered %>%
+  mutate(
+    OrthoET_IA_first_run_dwell_time = as.numeric(OrthoET_IA_first_run_dwell_time),
+    first_run_dwell_sec = OrthoET_IA_first_run_dwell_time / 1000
+  )
+
+# Step 2: Participant-level means per IA
+participant_means_first_run <- first_run_dwell_data %>%
+  group_by(participant_id, Group, OrthoET_IA_label) %>%
+  summarise(mean_first_run = mean(first_run_dwell_sec, na.rm = TRUE), .groups = "drop")
+
+# Step 3: Group-level summary across participants
+first_run_summary_table <- participant_means_first_run %>%
+  group_by(Group, OrthoET_IA_label) %>%
+  summarise(
+    n = n(),
+    Mean = round(mean(mean_first_run), 2),
+    SD = round(sd(mean_first_run), 2),
+    Min = round(min(mean_first_run), 2),
+    Q1 = round(quantile(mean_first_run, 0.25), 2),
+    Median = round(median(mean_first_run), 2),
+    Q3 = round(quantile(mean_first_run, 0.75), 2),
+    Max = round(max(mean_first_run), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(Mean_SD = glue("{Mean} ({SD})"))
+
+# Step 4: Format table
+first_run_summary_table %>%
+  select(Group, OrthoET_IA_label, Mean_SD) %>%
+  pivot_wider(names_from = OrthoET_IA_label, values_from = Mean_SD) %>%
+  gt() %>%
+  tab_header(
+    title = "Table 9: Participant-Level First-Run Dwell Time",
+    subtitle = "Each participant's mean first-run dwell time per IA (in seconds, raw)"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    High_Ortho_IA = "High Ortho",
+    Low_Ortho_IA = "Low Ortho",
+    Illegal_IA = "Illegal Ortho",
+    Unpron_IA = "Unpronounceable Ortho"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+```
+
+
+```{r}
+#| echo: false
+ggplot(first_run_dwell_data, aes(x = OrthoET_IA_label, y = first_run_dwell_sec, fill = Group)) +
+  geom_violin(position = position_dodge(0.9), alpha = 0.6, trim = TRUE) +
+  geom_boxplot(width = 0.1, position = position_dodge(0.9), outlier.shape = NA) +
+  labs(
+    title = "Figure 8: Trial-Level First-Run Dwell Time by Response Option Type",
+    subtitle = "Unwinsorized first-run dwell time shown in seconds",
+    x = "Response Option Type",
+    y = "First-Run Dwell Time (seconds)"
+  ) +
+  theme_minimal(base_size = 12)
+
+```
+
+
+To address the influence of potential outlier trials, first-run dwell times were Winsorized at the 2.5th and 97.5th percentiles at the trial level. Each participant’s mean dwell time during their first pass over each response option type was then computed, and group-level summaries are presented in Table 10.
+
+The pattern of results remained consistent with the raw data. Participants spent the most time on High orthographic options, with average dwell times ranging from 0.66 seconds (SD = 0.13) in the Compensated group to 0.74 seconds (SD = 0.27) in the Dyslexia group. Low orthographic items elicited shorter first-run dwell times, followed by Illegal and Unpronounceable options. Across all groups, dwell time was shortest for Unpronounceable options, with means ranging from 0.36 to 0.43 seconds.
+
+Figure 9 shows the distribution of Winsorized first-run dwell times at the trial level. Compared to the raw data, the Winsorized distributions are more compressed, particularly for High and Low orthographic options, but still reflect the same relative differences in processing time across item types.
+
+
+
+```{r}
+#| include: false
+# Compute 2.5th and 97.5th percentiles
+bounds_first_run <- quantile(first_run_dwell_data$first_run_dwell_sec, probs = c(0.025, 0.975), na.rm = TRUE)
+
+# Apply winsorization
+first_run_dwell_winsor <- first_run_dwell_data %>%
+  mutate(
+    first_run_dwell_sec_winsor = case_when(
+      first_run_dwell_sec < bounds_first_run[1] ~ bounds_first_run[1],
+      first_run_dwell_sec > bounds_first_run[2] ~ bounds_first_run[2],
+      TRUE ~ first_run_dwell_sec
+    )
+  )
+
+```
+
+
+```{r}
+#| echo: false
+library(ggplot2)
+
+ggplot(first_run_dwell_winsor, aes(x = OrthoET_IA_label, y = first_run_dwell_sec_winsor, fill = Group)) +
+  geom_violin(position = position_dodge(0.9), alpha = 0.6, trim = TRUE) +
+  geom_boxplot(width = 0.1, position = position_dodge(0.9), outlier.shape = NA) +
+  labs(
+    title = "Figure 9: Winsorized First-Run Dwell Time by Response Option Type",
+    subtitle = "First-run dwell time winsorized at 2.5th and 97.5th percentiles (in seconds)",
+    x = "Response Option Type",
+    y = "First-Run Dwell Time (seconds, Winsorized)"
+  ) +
+  theme_minimal(base_size = 12)
+
+```
+
+
+```{r}
+#| echo: false
+library(dplyr)
+library(gt)
+library(tidyr)
+library(glue)
+
+# Participant-level means using winsorized dwell time
+participant_means_first_run_win <- first_run_dwell_winsor %>%
+  group_by(participant_id, Group, OrthoET_IA_label) %>%
+  summarise(mean_first_run_winsor = mean(first_run_dwell_sec_winsor, na.rm = TRUE), .groups = "drop")
+
+# Group × IA summary stats
+first_run_summary_winsor <- participant_means_first_run_win %>%
+  group_by(Group, OrthoET_IA_label) %>%
+  summarise(
+    n = n(),
+    Mean = round(mean(mean_first_run_winsor), 2),
+    SD = round(sd(mean_first_run_winsor), 2),
+    Min = round(min(mean_first_run_winsor), 2),
+    Q1 = round(quantile(mean_first_run_winsor, 0.25), 2),
+    Median = round(median(mean_first_run_winsor), 2),
+    Q3 = round(quantile(mean_first_run_winsor, 0.75), 2),
+    Max = round(max(mean_first_run_winsor), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(Mean_SD = glue("{Mean} ({SD})"))
+
+# Format as gt table
+first_run_summary_winsor %>%
+  select(Group, OrthoET_IA_label, Mean_SD) %>%
+  pivot_wider(names_from = OrthoET_IA_label, values_from = Mean_SD) %>%
+  gt() %>%
+  tab_header(
+    title = "Table 10: Winsorized Participant-Level First-Run Dwell Time",
+    subtitle = "Each participant's mean first-run dwell time per IA (seconds, after winsorization)"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    High_Ortho_IA = "High Ortho",
+    Low_Ortho_IA = "Low Ortho",
+    Illegal_IA = "Illegal Ortho",
+    Unpron_IA = "Unpronounceable Ortho"
+  )
+
+```
+
+
+
+
+
+
+
+
+
+
+
