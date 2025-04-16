@@ -331,6 +331,52 @@ summary_by_group %>%
 ```
 
 
+```{r}
+#| include: false
+library(dplyr)
+library(tidyr)
+
+#### Different ways to check if the max high ortho option chosen was correct in table 2
+
+# 1. Based on response choice alone
+high_ortho_choice_counts <- ortho_data %>%
+  filter(OrthoET_response_choice == "High_Ortho") %>%
+  distinct(participant_id, OrthoET_trial_number) %>%
+  count(participant_id, name = "n_high_ortho_chosen")
+
+# 2. Based on high-only accuracy variable
+high_accuracy_counts <- ortho_data %>%
+  filter(OrthoET_response_choice_accuracy_high == 1) %>%
+  distinct(participant_id, OrthoET_trial_number) %>%
+  count(participant_id, name = "n_high_accurate")
+
+# Combine the two
+combined_accuracy_counts <- full_join(
+  high_ortho_choice_counts,
+  high_accuracy_counts,
+  by = "participant_id"
+)
+
+# Check for mismatches
+combined_accuracy_counts %>%
+  mutate(across(starts_with("n_"), ~replace_na(.x, 0))) %>%
+  filter(n_high_ortho_chosen != n_high_accurate)
+
+
+```
+
+
+```{r}
+#| include: false
+ortho_data %>%
+  filter(OrthoET_response_choice == "High_Ortho") %>%
+  distinct(participant_id, OrthoET_trial_number) %>%
+  count(participant_id) %>%
+  filter(n == 18)
+
+```
+
+
 \
 
 #### 2. Response time (RT) when High_ortho is selected
@@ -353,34 +399,42 @@ high_rt_data %>%
 library(dplyr)
 library(gt)
 
-# Set desired group order
+# Step 1: Convert RT to seconds
 high_rt_data <- high_rt_data %>%
-  mutate(Group = factor(Group, levels = c("TD", "Compensated", "Dyslexia")))
+  mutate(RT_sec = OrthoET_response_time / 1000)
 
-# Descriptive statistics of response time (converted to seconds)
-rt_summary_seconds <- high_rt_data %>%
-  mutate(RT_sec = OrthoET_response_time / 1000) %>%
+# Step 2: Get participant-level mean RT
+participant_means_pre_winsor <- high_rt_data %>%
+  group_by(participant_id, Group) %>%
+  summarise(mean_RT_sec = mean(RT_sec, na.rm = TRUE), .groups = "drop")
+
+# Step 3: Summarize participant-level means by group
+rt_summary_participant_level <- participant_means_pre_winsor %>%
   group_by(Group) %>%
   summarise(
-     Mean = round(mean(RT_sec, na.rm = TRUE), 2),
-    SD = round(sd(RT_sec, na.rm = TRUE), 2),
-    Min = round(min(RT_sec, na.rm = TRUE), 2),
-    Q1 = round(quantile(RT_sec, 0.25, na.rm = TRUE), 2),
-    Median = round(median(RT_sec, na.rm = TRUE), 2),
-    Q3 = round(quantile(RT_sec, 0.75, na.rm = TRUE), 2),
-    Max = round(max(RT_sec, na.rm = TRUE), 2),
+    n = n(),
+    Mean = round(mean(mean_RT_sec), 2),
+    SD = round(sd(mean_RT_sec), 2),
+    Min = round(min(mean_RT_sec), 2),
+    Q1 = round(quantile(mean_RT_sec, 0.25), 2),
+    Median = round(median(mean_RT_sec), 2),
+    Q3 = round(quantile(mean_RT_sec, 0.75), 2),
+    Max = round(max(mean_RT_sec), 2),
     .groups = "drop"
   )
 
-# Display as a gt table
-rt_summary_seconds %>%
+# Step 4: Display as a table
+library(gt)
+
+rt_summary_participant_level %>%
   gt() %>%
   tab_header(
-    title = "Table 3: Descriptive Statistics for Response Time by Group",
-    subtitle = "All values in seconds for trials where the High ortho option was selected"
+    title = "Table 3: Participant-Level Response Time Summary (Pre-Winsorization)",
+    subtitle = "Each participant's mean RT (in seconds) before winsorization"
   ) %>%
   cols_label(
     Group = "Group",
+    n = "n",
     Mean = "Mean",
     SD = "SD",
     Min = "Min",
@@ -625,13 +679,13 @@ ggplot(fixation_summary, aes(x = OrthoET_IA_label, y = mean_fixation_count, fill
 
 \
 
-Table 6 and Figure 5 display the proportion of fixations allocated to each response option type, averaged across all included trials and participants within each group. This analysis was limited to trials in which participants selected the “High” probability orthographic nonword and met the inclusion criterion of at least 10 such trials (TD: *n* = 22, Dyslexia: *n* = 22, Compensated: *n* = 14).
+Table 6 and Figure 5 display the proportion of fixations allocated to each response option type, averaged across all included trials and participants within each group. 
 
 Participants in all three groups spent a similar proportion of their total fixations on the High orthographic item (M = 0.31 for all groups), suggesting consistent attention to the selected target. Fixations were distributed similarly across the other options, with the Low orthographic item receiving more fixations (M = 0.22–0.23) than the Illegal (M = 0.17) or Unpronounceable (M = 0.15–0.16) options. 
 
-
 ```{r}
-#| echo: false
+#| eval: false
+#| include: false
 library(dplyr)
 library(glue)
 library(tidyr)
@@ -658,8 +712,8 @@ percent_fixation_data_filtered <- high_selected_trials %>%
 percent_fixation_summary <- percent_fixation_data_filtered %>%
   group_by(Group, OrthoET_IA_label) %>%
   summarise(
-    mean_percent_fix = round(mean(`OrthoET_IA_fixation_%`, na.rm = TRUE), 2),
-    sd_percent_fix = round(sd(`OrthoET_IA_fixation_%`, na.rm = TRUE), 2),
+    mean_percent_fix = round(mean(OrthoET_IA_fixation_%, na.rm = TRUE), 2),
+    sd_percent_fix = round(sd(OrthoET_IA_fixation_%, na.rm = TRUE), 2),
     .groups = "drop"
   ) %>%
   mutate(mean_sd = glue::glue("{mean_percent_fix} ({sd_percent_fix})"))
@@ -688,11 +742,6 @@ percent_fixation_wide %>%
     heading.subtitle.font.size = 12
   )
 
-```
-
-```{r}
-#| echo: false
-# Make sure you compute mean % fixation per IA, and normalize within group
 
 ggplot(percent_fixation_summary, aes(x = Group, y = mean_percent_fix, fill = OrthoET_IA_label)) +
   geom_bar(stat = "identity", position = "fill") +
@@ -704,6 +753,97 @@ ggplot(percent_fixation_summary, aes(x = Group, y = mean_percent_fix, fill = Ort
     fill = "Option Type"
   ) +
   theme_minimal()
+```
+
+
+```{r}
+#| echo: false
+library(dplyr)
+library(tidyr)
+library(glue)
+library(gt)
+
+# Step 1: Filter to included participants and High-Ortho response trials
+ortho_included <- ortho_data %>%
+  filter(Ortho_ET_met_both_inclusion == 1)
+
+high_selected_trials <- ortho_included %>%
+  filter(OrthoET_response_choice == "High_Ortho")
+
+eligible_participants <- high_selected_trials %>%
+  distinct(participant_id, OrthoET_trial_number) %>%
+  count(participant_id) %>%
+  filter(n >= 10) %>%
+  pull(participant_id)
+
+filtered_data <- high_selected_trials %>%
+  filter(participant_id %in% eligible_participants)
+
+# Step 2: Compute participant-level mean fixation % per IA
+participant_fixation_percent <- filtered_data %>%
+  group_by(participant_id, Group, OrthoET_IA_label) %>%
+  summarise(
+    mean_fix_percent = mean(`OrthoET_IA_fixation_%`, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Step 3: Summarize across participants (group × IA)
+group_summary <- participant_fixation_percent %>%
+  group_by(Group, OrthoET_IA_label) %>%
+  summarise(
+    Mean = round(mean(mean_fix_percent), 2),
+    SD = round(sd(mean_fix_percent), 2),
+    .groups = "drop"
+  ) %>%
+  mutate(Mean_SD = glue("{Mean} ({SD})"))
+
+# Step 4: Pivot to wide table for display
+group_summary_wide <- group_summary %>%
+  select(Group, OrthoET_IA_label, Mean_SD) %>%
+  pivot_wider(names_from = OrthoET_IA_label, values_from = Mean_SD)
+
+# Step 5: Display as Table 6
+group_summary_wide %>%
+  gt() %>%
+  tab_header(
+    title = "Table 6: Proportion of Fixations on Each Option Type",
+    subtitle = "Mean (SD) Participant-Level % Fixation by Group and Item Type"
+  ) %>%
+  cols_label(
+    Group = "Group",
+    High_Ortho_IA = "High Ortho",
+    Low_Ortho_IA = "Low Ortho",
+    Illegal_IA = "Illegal Ortho",
+    Unpron_IA = "Unpronounceable Ortho"
+  ) %>%
+  tab_options(
+    heading.title.font.size = 14,
+    heading.subtitle.font.size = 12
+  )
+
+
+```
+
+```{r}
+#| echo: false
+
+## plot for fixation%
+ggplot(participant_fixation_percent, aes(x = OrthoET_IA_label, y = mean_fix_percent, fill = Group)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7, position = position_dodge(width = 0.75)) +
+  geom_jitter(
+    alpha = 0.5,
+    size = 1,
+    position = position_jitterdodge(jitter.width = 0.15, dodge.width = 0.75)
+  ) +
+  labs(
+    title = "Figure 5: Participant-Level % Fixations by Response Option Type",
+    subtitle = "Each point represents a participant’s average across High-Ortho trials",
+    x = "Response Option Type",
+    y = "Proportion of Total Fixations",
+    fill = "Group"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  theme_minimal(base_size = 12)
 
 ```
 
