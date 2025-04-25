@@ -183,7 +183,10 @@ choice_highlow <- choice_summary %>%
 anova_highlow <- aov(Trial_Count ~ Group * Response_Type, data = choice_highlow)
 summary(anova_highlow)
 
+table_data <- table(choice_highlow$Group, choice_highlow$Response_Type)
+chisq.test(table_data)
 
+fisher.test(table_data)
 
 ```
 
@@ -232,7 +235,9 @@ Although participants had four response options (High, Low, Illegal, and Unprono
 There was no significant main effect of group, $F(2, 130) = 0.06$, $p = .94$.  
 The interaction between group and response type was not significant, $F(2, 130) = 2.62$, $p = .08$, though this trend suggests potential group differences in response patterns that may warrant further investigation.
 
+
 ---
+
 
 #### Inclusion Criteria for Eye Tracking Analyses
 
